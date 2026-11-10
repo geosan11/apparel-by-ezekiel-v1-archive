@@ -100,7 +100,7 @@ function initGallery() {
       const isWide = d.featured && index === 0;
 
       return `
-        <article class="design-card reveal-on-scroll ${isWide ? 'featured-wide' : ''}" data-id="${escapeHtml(d.id)}" data-slug="${escapeHtml(d.slug)}">
+        <article class="design-card ui-card reveal-on-scroll ${isWide ? 'featured-wide' : ''}" data-id="${escapeHtml(d.id)}" data-slug="${escapeHtml(d.slug)}">
           <div class="card-media">
             <div class="card-badges">
               ${d.isNewThisWeek ? '<span class="badge badge-new">New Drop</span>' : ''}
@@ -543,7 +543,7 @@ function openDetailModal(design) {
     content.innerHTML = `
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4);">
         <div>
-          <img src="${escapeHtml(design.image)}" alt="${escapeHtml(design.title)}" style="width: 100%; border: 1px solid var(--color-border); background: #141312; border-radius: 2px;" width="800" height="1000"/>
+          <img src="${escapeHtml(design.image)}" alt="${escapeHtml(design.title)}" style="width: 100%; border: 1px solid var(--border); background: var(--card); border-radius: var(--radius);" width="800" height="1000"/>
         </div>
         <div style="display: flex; flex-direction: column; gap: var(--space-2);">
           <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -551,19 +551,19 @@ function openDetailModal(design) {
             <span class="badge ${design.isNewThisWeek ? 'badge-new' : 'badge-beta'}">${design.isNewThisWeek ? 'New Drop' : 'Signature'}</span>
           </div>
           <h2>${escapeHtml(design.title)}</h2>
-          <div style="font-size: 1.4rem; color: var(--color-gold-light); font-weight: 600;">${escapeHtml(design.priceFormatted)}</div>
+          <div style="font-size: 1.4rem; color: var(--gold-light); font-weight: 600;">${escapeHtml(design.priceFormatted)}</div>
           <p style="margin-top: 8px;">${escapeHtml(design.description)}</p>
           
-          <div style="background: var(--color-bg-elevated); padding: 12px 16px; border-radius: 2px; border: 1px solid var(--color-border-subtle); margin: 8px 0;">
+          <div class="ui-card" style="padding: 12px 16px; margin: 8px 0;">
             <div style="font-size: 0.85rem; margin-bottom: 4px;"><strong>Fabric:</strong> ${escapeHtml(design.fabric)}</div>
             <div style="font-size: 0.85rem;"><strong>Lead Time:</strong> ${escapeHtml(design.leadTime)}</div>
           </div>
 
           <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
-            <button class="btn btn-primary" id="detailBookBtn">Book Bespoke Fitting</button>
+            <button class="btn btn-primary ui-btn-gold" id="detailBookBtn">Book Bespoke Fitting</button>
             <button class="btn btn-outline" id="detail3dBtn">3D Preview (Beta)</button>
             <button class="btn btn-outline" id="detailTryonBtn">Try-On (Beta)</button>
-            <a href="${escapeHtml(waShareUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="border-color: #25D366; color: #F6F3EE;">
+            <a href="${escapeHtml(waShareUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="border-color: rgba(37, 211, 102, 0.4); color: #25D366;">
               Share on WhatsApp
             </a>
           </div>

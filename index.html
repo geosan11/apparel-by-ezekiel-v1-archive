@@ -87,7 +87,7 @@
     </section>
 
     <!-- Recently Viewed Hook Strip (dynamically populated) -->
-    <section class="drop-strip-section" id="recentlyViewedSection" style="display: none; background-color: #11100F;" aria-label="Recently Viewed Designs">
+    <section class="drop-strip-section" id="recentlyViewedSection" style="display: none; background-color: var(--secondary);" aria-label="Recently Viewed Designs">
       <div class="container drop-strip-inner">
         <div style="display: flex; align-items: center; gap: 12px;">
           <span class="label-caps">Recently Viewed:</span>
@@ -376,28 +376,28 @@
         </div>
 
         <!-- Booking Success & Simulated Payment Section -->
-        <div id="bookingSuccessSection" style="display: none; text-align: center; padding: 12px 0;">
-          <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(78, 154, 81, 0.2); border: 1px solid #4E9A51; color: #4E9A51; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 1.5rem;">
+        <div id="bookingSuccessSection" style="display: none; text-align: center; padding: var(--space-3) 0;">
+          <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.3); color: var(--success); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 1.25rem;">
             ✓
           </div>
-          <h3>Fitting Reservation Initiated</h3>
-          <p style="margin: 8px 0 16px; font-size: 0.9rem;">
+          <h3 class="ui-card-title" style="font-size: 1.35rem;">Fitting Reservation Initiated</h3>
+          <p style="margin: 8px 0 16px; font-size: 0.875rem; color: var(--muted-foreground);">
             Appointment Ref: <strong id="bookingSuccessRef" class="text-gold"></strong>
           </p>
 
-          <div style="background: var(--color-bg-elevated); padding: 16px; border-radius: 2px; margin-bottom: 20px; border: 1px solid var(--color-border-subtle); text-align: left;">
-            <div style="display: flex; justify-content: space-between;">
-              <span>Fitting Commitment Deposit:</span>
-              <strong>₦50,000</strong>
+          <div class="ui-card" style="padding: var(--space-4); margin-bottom: var(--space-5); text-align: left;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.875rem; color: var(--muted-foreground);">Fitting Commitment Deposit:</span>
+              <strong style="font-size: 1.1rem; color: var(--foreground);">₦50,000</strong>
             </div>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 10px;">
-            <button class="btn btn-primary" id="simulateOpayBtn">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <button class="btn btn-primary ui-btn ui-btn-opay" id="simulateOpayBtn" style="width: 100%;">
               Preview OPay deposit (demo)
             </button>
-            <div id="opayDemoNote" style="font-size: 0.82rem; color: var(--color-text-secondary); text-align: center;">Demo, no payment taken. Ezekiel will confirm your deposit on WhatsApp.</div>
-            <a href="#" id="bookingConfirmWaBtn" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="border-color: #25D366; color: #25D366;">
+            <div id="opayDemoNote" style="font-size: 0.8125rem; color: var(--muted-foreground); text-align: center;">Demo, no payment taken. Ezekiel will confirm your deposit on WhatsApp.</div>
+            <a href="#" id="bookingConfirmWaBtn" target="_blank" rel="noopener noreferrer" class="btn btn-outline ui-btn ui-btn-outline" style="border-color: rgba(37, 211, 102, 0.4); color: #25D366; width: 100%;">
               Confirm on WhatsApp with Ezekiel
             </a>
           </div>
@@ -407,33 +407,33 @@
   </div>
 
   <!-- 4. Simulated OPay Checkout Modal -->
-  <div class="modal-backdrop" id="opayModal" role="dialog" aria-modal="true" aria-labelledby="opayModalTitle">
-    <div class="modal-panel" style="max-width: 440px; padding: 0; overflow: hidden;">
+  <div class="modal-backdrop ui-dialog-backdrop" id="opayModal" role="dialog" aria-modal="true" aria-labelledby="opayModalTitle">
+    <div class="modal-panel ui-dialog-panel" style="max-width: 440px; padding: 0; overflow: hidden;">
       <!-- Persistent DEMO Notice -->
       <div class="demo-payment-banner">
         DEMO — NO REAL PAYMENT IS TAKEN
       </div>
 
-      <div style="padding: 24px; background-color: #0E0E0E;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+      <div style="padding: var(--space-6); background-color: var(--card);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-5);">
           <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-weight: 800; font-size: 1.2rem; color: #00B875; letter-spacing: -0.02em;">OPay</span>
-            <span style="font-size: 0.8rem; color: var(--color-text-secondary);">Checkout Simulation</span>
+            <span style="font-weight: 800; font-size: 1.25rem; color: var(--opay); letter-spacing: -0.02em;">OPay</span>
+            <span class="ui-badge ui-badge-secondary" style="font-size: 0.7rem;">Checkout Simulation</span>
           </div>
-          <button class="modal-close-btn" onclick="document.getElementById('opayModal').classList.remove('open');">✕</button>
+          <button class="modal-close-btn ui-dialog-close" onclick="document.getElementById('opayModal').classList.remove('open');">✕</button>
         </div>
 
-        <div style="text-align: center; padding: 16px 0; border-top: 1px solid var(--color-border-subtle); border-bottom: 1px solid var(--color-border-subtle); margin-bottom: 20px;">
-          <div style="font-size: 0.8rem; color: var(--color-text-secondary); text-transform: uppercase;">Amount to Pay</div>
-          <div style="font-size: 2rem; font-weight: 700; color: #F6F3EE; font-family: var(--font-body); margin: 4px 0;">₦50,000.00</div>
-          <div style="font-size: 0.75rem; color: var(--color-gold);">Merchant: Apparel by Ezekiel Atelier Lagos</div>
+        <div class="ui-card" style="text-align: center; padding: var(--space-4) var(--space-3); margin-bottom: var(--space-5); background-color: var(--secondary); border: 1px solid var(--border);">
+          <div style="font-size: 0.75rem; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.05em;">Amount to Pay</div>
+          <div style="font-size: 1.85rem; font-weight: 700; color: var(--foreground); font-family: var(--font-body); margin: 6px 0;">₦50,000.00</div>
+          <div style="font-size: 0.75rem; color: var(--gold);">Merchant: Apparel by Ezekiel Atelier Lagos</div>
         </div>
 
-        <div style="font-size: 0.82rem; color: var(--color-text-secondary); line-height: 1.5; margin-bottom: 20px;">
+        <div style="font-size: 0.8125rem; color: var(--muted-foreground); line-height: 1.5; margin-bottom: var(--space-5);">
           This is a demonstration of the Nigerian payment flow (Bank Transfer / USSD / Card) for booking deposits. This is a demo only and no money is taken.
         </div>
 
-        <button class="btn btn-primary" id="completeOpaySimBtn" style="width: 100%; background-color: #00B875; border-color: #00B875; color: #FFFFFF;">
+        <button class="btn btn-primary ui-btn ui-btn-opay" id="completeOpaySimBtn" style="width: 100%;">
           Close demo (no payment taken)
         </button>
       </div>
