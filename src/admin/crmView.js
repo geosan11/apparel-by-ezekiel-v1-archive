@@ -134,17 +134,17 @@ function renderFollowUpCard({ store, showToast }) {
 
   container.style.display = 'block';
   container.innerHTML = `
-    <div id="activeFollowUpCard" style="background: var(--color-bg-card); border: 1px solid var(--color-border-subtle); border-left: 3px solid var(--color-gold); padding: 18px 20px; border-radius: 2px; margin-bottom: 24px; transition: opacity 240ms cubic-bezier(0.2, 0.7, 0.2, 1), transform 240ms cubic-bezier(0.2, 0.7, 0.2, 1);">
+    <div id="activeFollowUpCard" style="background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--gold); padding: 18px 20px; border-radius: var(--radius); margin-bottom: 24px; transition: opacity 240ms cubic-bezier(0.2, 0.7, 0.2, 1), transform 240ms cubic-bezier(0.2, 0.7, 0.2, 1);">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
         <div>
-          <div class="label-caps" style="color: var(--color-gold); margin-bottom: 4px;">Follow up</div>
-          <button type="button" id="followUpClientNameBtn" style="background: none; border: none; padding: 0; font-family: var(--font-display); font-size: 1.35rem; font-weight: 600; color: var(--color-text-primary); cursor: pointer; text-align: left;">
+          <div class="label-caps" style="color: var(--gold); margin-bottom: 4px;">Follow up</div>
+          <button type="button" id="followUpClientNameBtn" style="background: none; border: none; padding: 0; font-family: var(--font-display); font-size: 1.35rem; font-weight: 600; color: var(--foreground); cursor: pointer; text-align: left;">
             ${escapeHtml(next.customerName || next.name)}
           </button>
-          <div style="font-size: 0.88rem; color: var(--color-text-primary); margin: 6px 0 10px;">
+          <div style="font-size: 0.88rem; color: var(--foreground); margin: 6px 0 10px;">
             ${escapeHtml(next.note || '')}
           </div>
-          <div style="font-size: 0.78rem; color: var(--color-text-secondary);">
+          <div style="font-size: 0.78rem; color: var(--muted-foreground);">
             Due: <strong>${escapeHtml(dueText)}</strong> (${escapeHtml(next.due)})
           </div>
         </div>
@@ -152,10 +152,10 @@ function renderFollowUpCard({ store, showToast }) {
         <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
           ${
             phoneDigits
-              ? `<a href="https://wa.me/${phoneDigits}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" style="padding: 6px 14px; font-size: 0.75rem;">WhatsApp ↗</a>`
+              ? `<a href="https://wa.me/${phoneDigits}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm ui-btn ui-btn-outline ui-btn-sm" style="border-color: rgba(37, 211, 102, 0.4); color: #25D366; padding: 6px 14px; font-size: 0.75rem;">WhatsApp ↗</a>`
               : ''
           }
-          <button type="button" id="markFollowUpDoneBtn" class="btn btn-outline btn-sm" style="padding: 6px 14px; font-size: 0.75rem;">
+          <button type="button" id="markFollowUpDoneBtn" class="btn btn-outline btn-sm ui-btn ui-btn-outline ui-btn-sm" style="padding: 6px 14px; font-size: 0.75rem;">
             Mark Done
           </button>
         </div>
@@ -240,12 +240,12 @@ function renderClientsList({ store, showToast } = {}) {
       const dotColor = STATUS_COLORS[status] || STATUS_COLORS.quiet;
 
       return `
-        <div class="crm-client-row" data-customer-id="${escapeHtml(c.id)}" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--color-border-subtle); cursor: pointer; min-height: 44px; transition: background-color 160ms cubic-bezier(0.2, 0.7, 0.2, 1);">
+        <div class="crm-client-row" data-customer-id="${escapeHtml(c.id)}" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid var(--border); cursor: pointer; min-height: 44px; transition: background-color var(--duration-hover) var(--ease-out);">
           <div style="display: flex; align-items: center; gap: 14px; min-width: 0;">
             <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ${dotColor}; flex-shrink: 0;" title="Status: ${status}"></span>
-            <span style="font-weight: 500; font-size: 0.92rem; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(c.name)}</span>
+            <span style="font-weight: 500; font-size: 0.92rem; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(c.name)}</span>
           </div>
-          <div style="font-size: 0.84rem; color: var(--color-text-secondary); white-space: nowrap; margin-left: 12px;">
+          <div style="font-size: 0.84rem; color: var(--muted-foreground); white-space: nowrap; margin-left: 12px;">
             ${escapeHtml(c.phone)}
           </div>
         </div>
@@ -285,7 +285,7 @@ export function openCustomerProfile(customerId, { store, showToast } = {}) {
 
   content.innerHTML = `
     <!-- Header -->
-    <div style="padding-bottom: 20px; border-bottom: 1px solid var(--color-border-subtle); margin-bottom: 20px;">
+    <div style="padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 20px;">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
         <div>
           <h3 style="font-family: var(--font-display); font-size: 1.8rem; line-height: 1.1; margin-bottom: 4px;">
@@ -295,7 +295,7 @@ export function openCustomerProfile(customerId, { store, showToast } = {}) {
             <span style="font-size: 0.88rem; color: var(--color-text-secondary);">${escapeHtml(customer.phone)}</span>
             ${
               phoneDigits
-                ? `<a href="https://wa.me/${phoneDigits}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" style="padding: 2px 10px; font-size: 0.72rem; min-height: 28px;">WhatsApp ↗</a>`
+                ? `<a href="https://wa.me/${phoneDigits}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" style="border-color: rgba(37, 211, 102, 0.4); color: #25D366; padding: 2px 10px; font-size: 0.72rem; min-height: 28px;">WhatsApp ↗</a>`
                 : ''
             }
             <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: ${dotColor};">
@@ -324,7 +324,7 @@ export function openCustomerProfile(customerId, { store, showToast } = {}) {
       }
 
       <!-- Set Follow-up Form (revealed via text link) -->
-      <div id="setFollowUpPanel" style="display: none; margin-top: 16px; padding: 14px; background: var(--color-bg-elevated); border: 1px solid var(--color-border-subtle); border-radius: 2px;">
+      <div id="setFollowUpPanel" style="display: none; margin-top: 16px; padding: 14px; background: var(--secondary); border: 1px solid var(--border); border-radius: var(--radius);">
         <div class="label-caps" style="margin-bottom: 8px; font-size: 0.7rem;">Schedule Follow-up</div>
         <form id="profileFollowUpForm">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
@@ -346,7 +346,7 @@ export function openCustomerProfile(customerId, { store, showToast } = {}) {
     </div>
 
     <!-- Section 1: Orders (N) -->
-    <details style="border-bottom: 1px solid var(--color-border-subtle); padding: 14px 0;">
+    <details style="border-bottom: 1px solid var(--border); padding: 14px 0;">
       <summary style="cursor: pointer; font-weight: 600; font-size: 0.9rem; user-select: none; display: flex; justify-content: space-between; align-items: center;">
         <span>Orders (${linkedOrders.length})</span>
         <span style="font-size: 0.75rem; color: var(--color-text-secondary); text-transform: uppercase;">Expand ▾</span>
@@ -360,12 +360,12 @@ export function openCustomerProfile(customerId, { store, showToast } = {}) {
               ${linkedOrders
                 .map(
                   (o) => `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--color-bg-elevated); border: 1px solid var(--color-border-subtle); border-radius: 2px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--secondary); border: 1px solid var(--border); border-radius: var(--radius-sm);">
                   <div>
                     <div style="font-size: 0.82rem; font-family: monospace; color: var(--color-text-secondary);">${escapeHtml(o.id)}</div>
                     <div style="font-weight: 500; font-size: 0.9rem;">${escapeHtml(o.design_title)}</div>
                   </div>
-                  <span class="badge" style="background: rgba(246, 243, 238, 0.08);">${escapeHtml(o.status)}</span>
+                  <span class="badge ui-badge-secondary">${escapeHtml(o.status)}</span>
                 </div>
               `
                 )
@@ -377,7 +377,7 @@ export function openCustomerProfile(customerId, { store, showToast } = {}) {
     </details>
 
     <!-- Section 2: Measurements -->
-    <details style="border-bottom: 1px solid var(--color-border-subtle); padding: 14px 0;">
+    <details style="border-bottom: 1px solid var(--border); padding: 14px 0;">
       <summary style="cursor: pointer; font-weight: 600; font-size: 0.9rem; user-select: none; display: flex; justify-content: space-between; align-items: center;">
         <span>Measurements (${isCm ? 'cm' : 'inches'})</span>
         <span style="font-size: 0.75rem; color: var(--color-text-secondary); text-transform: uppercase;">Expand ▾</span>
@@ -425,7 +425,7 @@ export function openCustomerProfile(customerId, { store, showToast } = {}) {
     </details>
 
     <!-- Section 3: Notes -->
-    <details style="border-bottom: 1px solid var(--color-border-subtle); padding: 14px 0;">
+    <details style="border-bottom: 1px solid var(--border); padding: 14px 0;">
       <summary style="cursor: pointer; font-weight: 600; font-size: 0.9rem; user-select: none; display: flex; justify-content: space-between; align-items: center;">
         <span>Notes</span>
         <span style="font-size: 0.75rem; color: var(--color-text-secondary); text-transform: uppercase;">Expand ▾</span>

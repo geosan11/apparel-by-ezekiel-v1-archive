@@ -525,6 +525,13 @@ function renderOrders() {
         <div style="font-size: 0.8rem; color: var(--color-text-secondary);">${escapeHtml(o.customer_phone)}</div>
       `;
 
+    const channelClass = {
+      'WhatsApp': 'ui-badge-whatsapp',
+      'Instagram': 'ui-badge-instagram',
+      'Walk-in': 'ui-badge-walkin',
+      'Site': 'ui-badge-site'
+    }[o.source] || 'ui-badge-secondary';
+
     return `
       <tr>
         <td style="font-family: monospace; font-size: 0.82rem; color: var(--color-gold);">${escapeHtml(o.id)}</td>
@@ -534,11 +541,11 @@ function renderOrders() {
           <div style="font-size: 0.75rem; color: var(--color-text-muted);">Fitting: ${escapeHtml(o.fitting_date || 'N/A')}</div>
         </td>
         <td>
-          <span class="badge" style="background: rgba(184, 155, 106, 0.1);">${escapeHtml(o.source)}</span>
+          <span class="badge ${channelClass}">${escapeHtml(o.source)}</span>
         </td>
         <td>
           <div><strong>${formatNaira(o.amount)}</strong></div>
-          <div style="font-size: 0.75rem; color: ${o.deposit_status === 'paid' ? '#4E9A51' : 'var(--color-text-muted)'};">
+          <div style="font-size: 0.75rem; color: ${o.deposit_status === 'paid' ? 'var(--success)' : 'var(--color-text-muted)'};">
             Dep: ${formatNaira(o.deposit_amount)} (${escapeHtml(o.deposit_status)})
           </div>
         </td>
@@ -550,7 +557,7 @@ function renderOrders() {
           </select>
         </td>
         <td>
-          <button class="btn btn-outline btn-sm delete-order-btn" data-order-id="${escapeHtml(o.id)}" style="padding: 4px 8px; border-color: transparent; color: #D9534F;">✕</button>
+          <button class="btn btn-outline btn-sm delete-order-btn ui-btn-destructive" data-order-id="${escapeHtml(o.id)}" style="padding: 4px 8px; border-color: transparent;">✕</button>
         </td>
       </tr>
     `;
@@ -596,17 +603,17 @@ function renderExpenses() {
   }
 
   container.innerHTML = cachedExpenses.map((exp) => `
-    <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--color-border-subtle); background: var(--color-bg-card);">
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--card);">
       <div style="display: flex; align-items: center; gap: 14px;">
-        <span class="badge" style="background: rgba(184, 155, 106, 0.15);">${escapeHtml(exp.category)}</span>
+        <span class="badge ui-badge-secondary">${escapeHtml(exp.category)}</span>
         <div>
-          <div style="font-weight: 500;">${escapeHtml(exp.description || exp.category)}</div>
+          <div style="font-weight: 500; font-size: 0.875rem;">${escapeHtml(exp.description || exp.category)}</div>
           <div style="font-size: 0.78rem; color: var(--color-text-secondary);">${escapeHtml(exp.date)} ${exp.raw_input ? `• "${escapeHtml(exp.raw_input)}"` : ''}</div>
         </div>
       </div>
       <div style="display: flex; align-items: center; gap: 16px;">
-        <div style="font-weight: 700; color: #F6F3EE; font-size: 1rem;">${formatNaira(exp.amount)}</div>
-        <button class="btn btn-outline btn-sm delete-expense-btn" data-exp-id="${escapeHtml(exp.id)}" style="padding: 4px 8px; border-color: transparent; color: #D9534F;">✕</button>
+        <div style="font-weight: 700; color: var(--foreground); font-size: 1rem;">${formatNaira(exp.amount)}</div>
+        <button class="btn btn-outline btn-sm delete-expense-btn ui-btn-destructive" data-exp-id="${escapeHtml(exp.id)}" style="padding: 4px 8px; border-color: transparent;">✕</button>
       </div>
     </div>
   `).join('');
@@ -631,14 +638,14 @@ function renderBookingsLeads() {
   }
 
   container.innerHTML = cachedBookings.map((b) => `
-    <div style="padding: 12px; border-bottom: 1px solid var(--color-border-subtle); display: flex; justify-content: space-between; align-items: center;">
+    <div style="padding: 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
       <div>
         <div style="font-weight: 600;">${escapeHtml(b.customer_name)} <span style="font-size: 0.8rem; font-weight: normal; color: var(--color-text-secondary);">(${escapeHtml(b.phone)})</span></div>
         <div style="font-size: 0.82rem; color: var(--color-gold);">${escapeHtml(b.design_title)} • Fitting: ${escapeHtml(b.fitting_date)}</div>
         ${b.notes ? `<div style="font-size: 0.78rem; color: var(--color-text-muted);">Note: ${escapeHtml(b.notes)}</div>` : ''}
       </div>
       <div style="text-align: right;">
-        <span class="badge ${b.deposit_status === 'paid' ? 'badge-beta' : ''}" style="${b.deposit_status === 'paid' ? 'background: #4E9A51; color: #fff;' : 'background: #333;'}">
+        <span class="badge ${b.deposit_status === 'paid' ? 'ui-badge-default' : 'ui-badge-outline'}" style="${b.deposit_status === 'paid' ? 'background: rgba(34, 197, 94, 0.15); color: var(--success); border-color: rgba(34, 197, 94, 0.3);' : ''}">
           ${b.deposit_status === 'paid' ? 'Deposit Paid' : 'Deposit Pending'}
         </span>
         <div style="margin-top: 6px;">

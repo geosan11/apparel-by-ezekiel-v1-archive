@@ -9,36 +9,51 @@
   <link rel="icon" type="image/svg+xml" href="/images/logo.svg" />
   <style>
     .admin-nav-bar {
-      display: flex;
-      gap: 8px;
-      border-bottom: 1px solid var(--color-border-subtle);
+      display: inline-flex;
+      height: 2.6rem;
+      align-items: center;
+      justify-content: flex-start;
+      border-radius: var(--radius);
+      background-color: var(--muted);
+      padding: 3px;
+      color: var(--muted-foreground);
+      border: 1px solid var(--border);
+      gap: 4px;
       margin-bottom: 24px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
       scrollbar-width: none;
+      max-width: 100%;
     }
     .admin-nav-bar::-webkit-scrollbar {
       display: none;
     }
     .admin-nav-tab {
-      flex-shrink: 0;
-      background: none;
-      border: none;
-      border-bottom: 2px solid transparent;
-      color: var(--color-text-secondary);
-      padding: 12px 18px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       white-space: nowrap;
+      border-radius: var(--radius-sm);
+      padding: 0 16px;
+      height: 100%;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--muted-foreground);
+      transition: all var(--duration-hover) var(--ease-out);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
-    .admin-nav-tab:hover { color: var(--color-text-primary); }
+    .admin-nav-tab:hover {
+      color: var(--foreground);
+    }
     .admin-nav-tab.active {
-      color: var(--color-gold);
-      border-bottom-color: var(--color-gold);
+      background-color: var(--card);
+      color: var(--foreground);
+      box-shadow: var(--shadow-sm);
+      font-weight: 600;
     }
     .stats-grid {
       display: grid;
@@ -47,49 +62,59 @@
       margin-bottom: 24px;
     }
     .stat-card {
-      background: var(--color-bg-card);
-      border: 1px solid var(--color-border-subtle);
+      background: var(--card);
+      border: 1px solid var(--border);
       padding: 20px;
-      border-radius: 2px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
     }
     .stat-label {
-      font-size: 0.75rem;
-      color: var(--color-text-secondary);
+      font-size: 0.72rem;
+      color: var(--muted-foreground);
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 4px;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+      font-weight: 500;
     }
     .stat-val {
-      font-size: 1.8rem;
+      font-size: 1.75rem;
       font-weight: 700;
-      color: #F6F3EE;
+      color: var(--foreground);
       font-family: var(--font-body);
     }
     .orders-table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
-      font-size: 0.88rem;
+      font-size: 0.875rem;
     }
     .orders-table th {
-      padding: 12px 14px;
-      background: var(--color-bg-elevated);
-      color: var(--color-text-secondary);
-      font-weight: 600;
+      padding: 10px 14px;
+      background: var(--secondary);
+      color: var(--muted-foreground);
+      font-weight: 500;
       text-transform: uppercase;
       font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      border-bottom: 1px solid var(--color-border-subtle);
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
     }
     .orders-table td {
-      padding: 14px;
-      border-bottom: 1px solid var(--color-border-subtle);
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--foreground);
+      vertical-align: middle;
+    }
+    .orders-table tbody tr:hover {
+      background-color: rgba(244, 244, 245, 0.03);
+    }
+    .orders-table tbody tr:last-child td {
+      border-bottom: none;
     }
     .chat-bubble {
-      background: var(--color-bg-elevated);
-      border: 1px solid var(--color-border-subtle);
-      padding: 14px;
-      border-radius: 4px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 14px 16px;
+      border-radius: var(--radius);
       margin-bottom: 16px;
     }
     .confirm-chip-box {
@@ -98,11 +123,15 @@
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 12px;
-      background: rgba(184, 155, 106, 0.12);
-      border: 1px solid var(--color-gold);
+      background: var(--secondary);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
       padding: 12px 16px;
-      border-radius: 2px;
+      border-radius: var(--radius);
       margin-bottom: 16px;
+    }
+    .crm-client-row:hover {
+      background-color: rgba(244, 244, 245, 0.04);
     }
   </style>
 </head>
@@ -113,7 +142,7 @@
 
   <!-- 1. LOGIN SCREEN -->
   <div id="adminLoginView" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;">
-    <div style="width: 100%; max-width: 440px; background: var(--color-bg-card); border: 1px solid var(--color-border); padding: 36px 32px; border-radius: 2px; box-shadow: var(--shadow-lift);">
+    <div class="ui-card" style="width: 100%; max-width: 440px; padding: 36px 32px; box-shadow: var(--shadow-lg);">
       
       <div style="text-align: center; margin-bottom: 28px;">
         <span class="brand-wordmark" style="font-size: 1.35rem;">APPAREL BY <span>EZEKIEL</span></span>
@@ -138,13 +167,13 @@
       </form>
 
       <!-- Supabase unconfigured notice -->
-      <div id="supabaseConfigNotice" style="display: none; padding: 12px; background: var(--color-bg-elevated); border: 1px solid var(--color-border-subtle); border-radius: 2px; font-size: 0.82rem; color: var(--color-text-secondary); margin-bottom: 20px;">
-        <strong style="color: var(--color-gold);">Supabase Backend:</strong> Environment variables (<code>VITE_SUPABASE_URL</code> & <code>VITE_SUPABASE_ANON_KEY</code>) are not set. The local IndexedDB engine is active.
+      <div id="supabaseConfigNotice" class="ui-card" style="display: none; padding: 12px; background: var(--secondary); font-size: 0.82rem; color: var(--muted-foreground); margin-bottom: 20px;">
+        <strong style="color: var(--gold);">Supabase Backend:</strong> Environment variables (<code>VITE_SUPABASE_URL</code> & <code>VITE_SUPABASE_ANON_KEY</code>) are not set. The local IndexedDB engine is active.
       </div>
 
       <!-- Prominent Instant Demo Login Button -->
       <div>
-        <button type="button" id="demoLoginBtn" class="btn btn-primary" style="width: 100%; padding: 14px 20px; font-size: 0.9rem; background: var(--color-gold); color: #0A0A0A; border-color: var(--color-gold);">
+        <button type="button" id="demoLoginBtn" class="btn btn-primary ui-btn ui-btn-gold" style="width: 100%; height: 2.75rem; font-size: 0.9rem;">
           Instant Demo Login
         </button>
         <p style="text-align: center; font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 8px;">
@@ -152,7 +181,7 @@
         </p>
       </div>
 
-      <div style="margin-top: 24px; text-align: center; border-top: 1px solid var(--color-border-subtle); padding-top: 16px;">
+      <div style="margin-top: 24px; text-align: center; border-top: 1px solid var(--border); padding-top: 16px;">
         <a href="/" style="font-size: 0.82rem; color: var(--color-text-secondary); text-decoration: underline;">
           ← Return to Public Atelier
         </a>
@@ -163,7 +192,7 @@
   <!-- 2. DASHBOARD VIEW -->
   <div id="adminDashboardView" style="display: none; min-height: 100vh;">
     <!-- Top Admin Header -->
-    <header style="background: rgba(14, 14, 14, 0.95); border-bottom: 1px solid var(--color-border-subtle); padding: 16px 24px; position: sticky; top: 0; z-index: 40;">
+    <header style="background: rgba(9, 9, 11, 0.95); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); padding: 14px 24px; position: sticky; top: 0; z-index: 40;">
       <div style="max-width: var(--max-width); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
         <div style="display: flex; align-items: center; gap: 16px;">
           <span class="brand-wordmark" style="font-size: 1.25rem;">APPAREL BY <span>EZEKIEL</span></span>
@@ -171,8 +200,8 @@
         </div>
 
         <div style="display: flex; align-items: center; gap: 12px;">
-          <a href="/" target="_blank" class="btn btn-outline btn-sm">Public Site ↗</a>
-          <button id="adminLogoutBtn" class="btn btn-outline btn-sm" style="color: #D9534F; border-color: rgba(217, 83, 79, 0.3);">Sign Out</button>
+          <a href="/" target="_blank" class="btn btn-outline btn-sm ui-btn ui-btn-outline ui-btn-sm">Public Site ↗</a>
+          <button id="adminLogoutBtn" class="btn btn-outline btn-sm ui-btn ui-btn-outline ui-btn-sm ui-btn-destructive">Sign Out</button>
         </div>
       </div>
     </header>
@@ -230,7 +259,7 @@
         </div>
 
         <!-- This Month Strip -->
-        <div style="background: var(--color-bg-card); border: 1px solid var(--color-border); padding: 18px 24px; border-radius: 2px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div class="ui-card" style="padding: 18px 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
           <div>
             <span class="label-caps">Current Month (November 2026)</span>
             <h3 style="margin-top: 4px;">Atelier Velocity</h3>
@@ -238,7 +267,7 @@
           <div style="display: flex; gap: 24px;">
             <div>
               <div class="stat-label">Month Revenue</div>
-              <div style="font-size: 1.25rem; font-weight: 700; color: var(--color-gold);" id="statMonthRevenue">₦0</div>
+              <div style="font-size: 1.25rem; font-weight: 700; color: var(--gold);" id="statMonthRevenue">₦0</div>
             </div>
             <div>
               <div class="stat-label">Month Orders</div>
@@ -252,7 +281,7 @@
         </div>
 
         <!-- Inbound Bookings Lead List -->
-        <div style="background: var(--color-bg-card); border: 1px solid var(--color-border-subtle); padding: 20px; border-radius: 2px;">
+        <div class="ui-card" style="padding: 20px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
             <h3 style="font-size: 1.2rem;">Inbound Website Booking Leads</h3>
             <span class="badge badge-beta">Syncs to Orders</span>
@@ -265,14 +294,14 @@
       <section id="tab-orders" class="admin-tab-screen" style="display: none;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
           <div style="display: flex; gap: 12px; align-items: center;">
-            <select id="orderSourceFilter" class="form-select" style="width: auto; padding: 6px 12px;">
+            <select id="orderSourceFilter" class="form-select ui-select" style="width: auto; padding: 6px 12px; height: 2rem; font-size: 0.8125rem;">
               <option value="all">All Sources</option>
               <option value="WhatsApp">WhatsApp</option>
               <option value="Instagram">Instagram</option>
               <option value="Walk-in">Walk-in</option>
               <option value="Site">Site</option>
             </select>
-            <select id="orderStatusFilter" class="form-select" style="width: auto; padding: 6px 12px;">
+            <select id="orderStatusFilter" class="form-select ui-select" style="width: auto; padding: 6px 12px; height: 2rem; font-size: 0.8125rem;">
               <option value="all">All Statuses</option>
               <option value="Pending">Pending</option>
               <option value="Confirmed">Confirmed</option>
@@ -283,13 +312,13 @@
             </select>
           </div>
 
-          <button class="btn btn-primary btn-sm" onclick="document.getElementById('newOrderModal').classList.add('open')">
+          <button class="btn btn-primary btn-sm ui-btn ui-btn-primary ui-btn-sm" onclick="document.getElementById('newOrderModal').classList.add('open')">
             + Record Manual Order
           </button>
         </div>
 
-        <div style="background: var(--color-bg-card); border: 1px solid var(--color-border-subtle); border-radius: 2px; overflow-x: auto;">
-          <table class="orders-table">
+        <div class="ui-table-container">
+          <table class="orders-table ui-table">
             <thead>
               <tr>
                 <th>Order Ref</th>
@@ -315,22 +344,22 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
           <div style="display: flex; align-items: center; gap: 12px;">
             <h2 style="font-family: var(--font-display); font-size: 1.8rem; margin: 0;">Clients</h2>
-            <button type="button" id="crmSearchToggleBtn" class="btn btn-outline btn-sm" style="padding: 6px 12px; min-width: 44px; min-height: 44px;" aria-label="Search clients">
+            <button type="button" id="crmSearchToggleBtn" class="btn btn-outline btn-sm ui-btn ui-btn-outline ui-btn-sm" style="padding: 6px 12px; min-width: 36px; min-height: 36px;" aria-label="Search clients">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
             </button>
-            <input type="search" id="crmSearchInput" class="form-input" placeholder="Filter by name or phone..." style="display: none; width: 220px; padding: 6px 12px; font-size: 0.85rem;" />
+            <input type="search" id="crmSearchInput" class="form-input ui-input" placeholder="Filter by name or phone..." style="display: none; width: 220px; padding: 4px 10px; font-size: 0.85rem; height: 2rem;" />
           </div>
 
-          <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('addCustomerModal').classList.add('open')">
+          <button type="button" class="btn btn-primary btn-sm ui-btn ui-btn-primary ui-btn-sm" onclick="document.getElementById('addCustomerModal').classList.add('open')">
             + Add Customer
           </button>
         </div>
 
         <!-- Minimal Customer List: dot + name + phone -->
-        <div style="background: var(--color-bg-card); border: 1px solid var(--color-border-subtle); border-radius: 2px; overflow: hidden;">
+        <div class="ui-card" style="overflow: hidden;">
           <div id="crmClientsList"></div>
         </div>
       </section>
@@ -339,7 +368,7 @@
       <section id="tab-expenses" class="admin-tab-screen" style="display: none;">
         <div style="display: grid; grid-template-columns: 1fr; gap: 24px;">
           <!-- Natural Language Expense Chat Box -->
-          <div style="background: var(--color-bg-card); border: 1px solid var(--color-border); padding: 24px; border-radius: 2px;">
+          <div class="ui-card" style="padding: 24px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
               <div>
                 <span class="label-caps">Rule-Based Instant Parser</span>
@@ -356,21 +385,21 @@
             <div id="expenseConfirmChip" class="confirm-chip-box">
               <div id="confirmChipText" style="font-size: 0.88rem; color: var(--color-text-primary);"></div>
               <div style="display: flex; gap: 8px;">
-                <button type="button" id="confirmChipSaveBtn" class="btn btn-primary btn-sm">Confirm & Save</button>
-                <button type="button" id="confirmChipCancelBtn" class="btn btn-outline btn-sm">Cancel</button>
+                <button type="button" id="confirmChipSaveBtn" class="btn btn-primary btn-sm ui-btn ui-btn-primary ui-btn-sm">Confirm & Save</button>
+                <button type="button" id="confirmChipCancelBtn" class="btn btn-outline btn-sm ui-btn ui-btn-outline ui-btn-sm">Cancel</button>
               </div>
             </div>
 
             <form id="expenseChatForm" style="display: flex; gap: 8px;">
-              <input type="text" id="expenseChatInput" class="form-input" placeholder='e.g. "Paid 18k for fabric today" or "N18000 fuel last friday"' required />
-              <button type="submit" class="btn btn-primary" style="white-space: nowrap;">Parse & Review</button>
+              <input type="text" id="expenseChatInput" class="form-input ui-input" placeholder='e.g. "Paid 18k for fabric today" or "N18000 fuel last friday"' required />
+              <button type="submit" class="btn btn-primary ui-btn ui-btn-primary" style="white-space: nowrap;">Parse & Review</button>
             </form>
           </div>
 
           <!-- Grid: Manual Expense Form & Recent Log -->
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
             <!-- Manual Form -->
-            <div style="background: var(--color-bg-card); border: 1px solid var(--color-border-subtle); padding: 20px; border-radius: 2px;">
+            <div class="ui-card" style="padding: 20px;">
               <h4 style="font-size: 1.1rem; margin-bottom: 16px;">Standard Expense Form</h4>
               <form id="standardExpenseForm">
                 <div class="form-group">
@@ -400,13 +429,13 @@
                   <label class="form-label" for="expDescription">Description</label>
                   <input type="text" id="expDescription" class="form-input" placeholder="Supplier or item details..." />
                 </div>
-                <button type="submit" class="btn btn-outline" style="width: 100%;">Record Expense</button>
+                <button type="submit" class="btn btn-outline ui-btn ui-btn-outline" style="width: 100%;">Record Expense</button>
               </form>
             </div>
 
             <!-- Expense Log -->
-            <div style="background: var(--color-bg-card); border: 1px solid var(--color-border-subtle); border-radius: 2px; overflow: hidden; display: flex; flex-direction: column;">
-              <div style="padding: 16px; border-bottom: 1px solid var(--color-border-subtle); background: var(--color-bg-elevated); font-weight: 600; font-size: 0.9rem;">
+            <div class="ui-card" style="overflow: hidden; display: flex; flex-direction: column;">
+              <div style="padding: 14px 16px; border-bottom: 1px solid var(--border); background: var(--secondary); font-weight: 600; font-size: 0.875rem;">
                 Recorded Expenditures
               </div>
               <div id="expensesListContainer" style="max-height: 440px; overflow-y: auto;"></div>
@@ -419,7 +448,7 @@
       <section id="tab-settings" class="admin-tab-screen" style="display: none;">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
           <!-- Backup & Preferences Card -->
-          <div style="background: var(--color-bg-card); border: 1px solid var(--color-border); padding: 24px; border-radius: 2px;">
+          <div class="ui-card" style="padding: 24px;">
             <span class="label-caps">Atelier Preferences & Portability</span>
             <h3 style="margin: 6px 0 12px;">Database & Measurement Settings</h3>
             
@@ -446,23 +475,23 @@
               Export full atelier records (designs, bookings, orders, expenses, subscribers, and clients) to a local JSON archive.
             </p>
             <div style="display: flex; flex-direction: column; gap: 12px;">
-              <button id="exportBackupBtn" class="btn btn-primary">
+              <button id="exportBackupBtn" class="btn btn-primary ui-btn ui-btn-primary">
                 Export Database JSON
               </button>
               
-              <label class="btn btn-outline" style="text-align: center;">
+              <label class="btn btn-outline ui-btn ui-btn-outline" style="text-align: center;">
                 Restore from JSON File
                 <input type="file" id="importBackupInput" accept=".json" style="display: none;" />
               </label>
 
-              <button id="resetDemoDataBtn" class="btn btn-outline" style="color: #D9534F; border-color: rgba(217, 83, 79, 0.3);">
+              <button id="resetDemoDataBtn" class="btn btn-outline ui-btn ui-btn-outline ui-btn-destructive">
                 Reset to Pristine Demo Data
               </button>
             </div>
           </div>
 
           <!-- Architecture & NDPA Compliance Card -->
-          <div style="background: var(--color-bg-card); border: 1px solid var(--color-border-subtle); padding: 24px; border-radius: 2px;">
+          <div class="ui-card" style="padding: 24px;">
             <span class="label-caps">Compliance & Security</span>
             <h3 style="margin: 6px 0 12px;">Data Layer Specifications</h3>
             <ul style="padding-left: 20px; font-size: 0.88rem; color: var(--color-text-secondary); display: flex; flex-direction: column; gap: 10px;">
@@ -478,11 +507,11 @@
   </div>
 
   <!-- Manual Order Modal -->
-  <div class="modal-backdrop" id="newOrderModal" role="dialog" aria-modal="true">
-    <div class="modal-panel">
-      <div class="modal-header">
+  <div class="modal-backdrop ui-dialog-backdrop" id="newOrderModal" role="dialog" aria-modal="true">
+    <div class="modal-panel ui-dialog-panel">
+      <div class="modal-header ui-dialog-header">
         <h3>Record Manual Client Order</h3>
-        <button class="modal-close-btn" onclick="document.getElementById('newOrderModal').classList.remove('open')">✕</button>
+        <button class="modal-close-btn ui-dialog-close" onclick="document.getElementById('newOrderModal').classList.remove('open')">✕</button>
       </div>
       <div class="modal-content">
         <form id="newOrderForm">
@@ -537,18 +566,18 @@
             <label class="form-label" for="orderNotes">Measurements / Notes</label>
             <textarea id="orderNotes" class="form-textarea" placeholder="Chest, length, fabric choices..."></textarea>
           </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%;">Save Order</button>
+          <button type="submit" class="btn btn-primary ui-btn ui-btn-primary" style="width: 100%;">Save Order</button>
         </form>
       </div>
     </div>
   </div>
 
   <!-- Add Customer Modal -->
-  <div class="modal-backdrop" id="addCustomerModal" role="dialog" aria-modal="true">
-    <div class="modal-panel" style="max-width: 440px;">
-      <div class="modal-header">
+  <div class="modal-backdrop ui-dialog-backdrop" id="addCustomerModal" role="dialog" aria-modal="true">
+    <div class="modal-panel ui-dialog-panel" style="max-width: 440px;">
+      <div class="modal-header ui-dialog-header">
         <h3>Add Customer</h3>
-        <button class="modal-close-btn" onclick="document.getElementById('addCustomerModal').classList.remove('open')">✕</button>
+        <button class="modal-close-btn ui-dialog-close" onclick="document.getElementById('addCustomerModal').classList.remove('open')">✕</button>
       </div>
       <div class="modal-content">
         <form id="addCustomerForm">
@@ -570,18 +599,18 @@
               <option value="Referral">Referral</option>
             </select>
           </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%;">Save Customer</button>
+          <button type="submit" class="btn btn-primary ui-btn ui-btn-primary" style="width: 100%;">Save Customer</button>
         </form>
       </div>
     </div>
   </div>
 
   <!-- Customer Profile Modal -->
-  <div class="modal-backdrop" id="customerProfileModal" role="dialog" aria-modal="true">
-    <div class="modal-panel" style="max-width: 580px;">
-      <div class="modal-header" style="border-bottom: 1px solid var(--color-border-subtle);">
+  <div class="modal-backdrop ui-dialog-backdrop" id="customerProfileModal" role="dialog" aria-modal="true">
+    <div class="modal-panel ui-dialog-panel" style="max-width: 580px;">
+      <div class="modal-header ui-dialog-header">
         <span class="label-caps">Client Profile</span>
-        <button class="modal-close-btn" onclick="document.getElementById('customerProfileModal').classList.remove('open')">✕</button>
+        <button class="modal-close-btn ui-dialog-close" onclick="document.getElementById('customerProfileModal').classList.remove('open')">✕</button>
       </div>
       <div class="modal-content" id="customerProfileContent"></div>
     </div>
