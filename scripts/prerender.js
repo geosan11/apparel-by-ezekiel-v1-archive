@@ -83,15 +83,16 @@ for (const d of designs) {
 
   <style>
     :root {
-      --color-bg: #0E0E0E;
-      --color-bg-card: #151413;
-      --color-bg-elevated: #1D1C1A;
-      --color-text-primary: #F6F3EE;
-      --color-text-secondary: #8A847C;
-      --color-gold: #B89B6A;
-      --color-gold-light: #D4BC91;
-      --color-border: rgba(184, 155, 106, 0.2);
-      --color-border-subtle: rgba(246, 243, 238, 0.08);
+      --color-bg: #ffffff;
+      --color-bg-card: #ffffff;
+      --color-bg-elevated: #f4f4f5;
+      --color-text-primary: #0a0a0a;
+      --color-text-secondary: #52525b;
+      --color-gold: #b89b6a;
+      --color-gold-text: #8a6d3b;
+      --color-gold-light: #d4bc91;
+      --color-border: rgba(9, 9, 11, 0.10);
+      --color-border-subtle: rgba(9, 9, 11, 0.08);
     }
     body {
       background-color: var(--color-bg);
@@ -107,7 +108,7 @@ for (const d of designs) {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(14, 14, 14, 0.95);
+      background: rgba(255, 255, 255, 0.95);
       position: sticky;
       top: 0;
       z-index: 10;
@@ -117,10 +118,10 @@ for (const d of designs) {
       font-size: 1.35rem;
       font-weight: 600;
       letter-spacing: 0.18em;
-      color: #F6F3EE;
+      color: var(--color-text-primary);
       text-decoration: none;
     }
-    .brand span { color: var(--color-gold); }
+    .brand span { color: var(--color-gold-text); }
     .container {
       max-width: 1100px;
       margin: 40px auto;
@@ -138,7 +139,7 @@ for (const d of designs) {
       border: 1px solid var(--color-border);
       border-radius: 2px;
       overflow: hidden;
-      background: #11100F;
+      background: var(--color-bg-elevated);
     }
     .img-wrap img { width: 100%; height: auto; display: block; }
     .badge {
@@ -149,13 +150,13 @@ for (const d of designs) {
       letter-spacing: 0.12em;
       text-transform: uppercase;
       border: 1px solid var(--color-border);
-      background: rgba(184, 155, 106, 0.1);
-      color: var(--color-gold);
+      background: rgba(184, 155, 106, 0.12);
+      color: var(--color-gold-text);
       border-radius: 2px;
     }
     .price {
       font-size: 1.8rem;
-      color: var(--color-gold-light);
+      color: var(--color-gold-text);
       font-weight: 700;
       margin: 12px 0;
     }
@@ -164,6 +165,7 @@ for (const d of designs) {
       font-size: 2.4rem;
       margin: 10px 0;
       font-weight: 600;
+      color: #0a0a0a;
     }
     .btn {
       display: inline-flex;
@@ -178,9 +180,35 @@ for (const d of designs) {
       text-transform: uppercase;
       transition: all 0.2s ease;
     }
-    .btn-primary { background: var(--color-gold); color: #0A0A0A; border: 1px solid var(--color-gold); }
-    .btn-outline { background: transparent; color: #F6F3EE; border: 1px solid var(--color-border); }
+    .btn-primary { background: #0a0a0a; color: #ffffff; border: 1px solid #0a0a0a; }
+    .btn-outline { background: transparent; color: var(--color-text-primary); border: 1px solid var(--color-border); }
     .btn-wa { background: #25D366; color: #FFFFFF; border: 1px solid #25D366; }
+    details {
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-elevated);
+      border-radius: 4px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    summary {
+      cursor: pointer;
+      padding: 12px 16px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      min-height: 44px;
+    }
+    summary::marker, summary::-webkit-details-marker { display: none; }
+    .disclosure-body {
+      padding: 12px 16px;
+      border-top: 1px solid var(--color-border-subtle);
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
@@ -205,18 +233,60 @@ for (const d of designs) {
         <span class="badge">${d.category}</span>
         <h1 class="title">${d.title}</h1>
         <div class="price">${d.priceFormatted}</div>
-        <p style="color: var(--color-text-secondary); font-size: 1.05rem; margin-bottom: 24px;">
+        <p style="color: var(--color-text-secondary); font-size: 1.05rem; margin-bottom: 20px;">
           ${d.description}
         </p>
 
-        <div style="background: var(--color-bg-elevated); padding: 18px; border-radius: 2px; border: 1px solid var(--color-border-subtle); margin-bottom: 28px;">
-          <div style="margin-bottom: 8px;"><strong>Fabric:</strong> ${d.fabric}</div>
-          <div style="margin-bottom: 8px;"><strong>Bespoke Lead Time:</strong> ${d.leadTime}</div>
-          <div style="color: var(--color-text-secondary); font-size: 0.85rem;">Includes initial consultation, personal muslin fitting, and final hand-embossed pressing.</div>
+        <!-- Primary Action First -->
+        <div style="margin-bottom: 20px;">
+          <a href="/?design=${d.slug}#booking" class="btn btn-primary" style="width: 100%; box-sizing: border-box;">Book Atelier Fitting</a>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 12px;">
-          <a href="/?design=${d.slug}#booking" class="btn btn-primary">Book Atelier Fitting</a>
+        <!-- Progressive Disclosure Accordions -->
+        <div style="margin-bottom: 24px;">
+          <details open>
+            <summary>
+              <span>Fabric & Textile Specification</span>
+              <span>▾</span>
+            </summary>
+            <div class="disclosure-body">
+              <div><strong>Textile:</strong> ${d.fabric}</div>
+              <div style="margin-top: 4px;">Precision hand-cut damask/wool with artisanal lining.</div>
+            </div>
+          </details>
+
+          <details>
+            <summary>
+              <span>Bespoke Sizing & Muslin Fitting</span>
+              <span>▾</span>
+            </summary>
+            <div class="disclosure-body">
+              <div>Individually patterned to your 12 anatomical measurements. Includes initial muslin consultation fitting and final tailoring adjustments.</div>
+            </div>
+          </details>
+
+          <details>
+            <summary>
+              <span>Garment Care & Longevity</span>
+              <span>▾</span>
+            </summary>
+            <div class="disclosure-body">
+              <div>Specialist dry clean only. Steam press on reverse side. Stored in bespoke breathable garment bag provided.</div>
+            </div>
+          </details>
+
+          <details>
+            <summary>
+              <span>Pricing & Deposit Terms</span>
+              <span>▾</span>
+            </summary>
+            <div class="disclosure-body">
+              <div>Total: ${d.priceFormatted} (includes 2 private fittings). Initial commitment deposit: ₦50,000 to reserve atelier time. Balance due upon final fit sign-off. Bespoke lead time: ${d.leadTime}.</div>
+            </div>
+          </details>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
           <a href="${bookingWaUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-wa">
             Confirm Fitting on WhatsApp
           </a>
