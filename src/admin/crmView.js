@@ -284,31 +284,28 @@ export function openCustomerProfile(customerId, { store, showToast } = {}) {
   const m = customer.measurements || {};
 
   content.innerHTML = `
-    <!-- Header -->
-    <div style="padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 20px;">
+    <!-- Header Card -->
+    <div style="background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px;">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
         <div>
-          <h3 style="font-family: var(--font-display); font-size: 1.8rem; line-height: 1.1; margin-bottom: 4px;">
+          <h3 style="font-family: var(--font-display); font-size: 1.6rem; line-height: 1.1; margin: 0 0 6px; color: var(--foreground);">
             ${escapeHtml(customer.name)}
           </h3>
-          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 6px;">
-            <span style="font-size: 0.88rem; color: var(--color-text-secondary);">${escapeHtml(customer.phone)}</span>
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <span style="font-size: 0.88rem; color: var(--muted-foreground);">${escapeHtml(customer.phone)}</span>
             ${
               phoneDigits
-                ? `<a href="https://wa.me/${phoneDigits}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" style="border-color: rgba(37, 211, 102, 0.4); color: #25D366; padding: 2px 10px; font-size: 0.72rem; min-height: 28px;">WhatsApp ↗</a>`
+                ? `<a href="https://wa.me/${phoneDigits}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" style="border-color: rgba(37, 211, 102, 0.4); color: #25D366; padding: 2px 10px; font-size: 0.72rem; min-height: 36px; display: inline-flex; align-items: center;">WhatsApp ↗</a>`
                 : ''
             }
-            <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: ${dotColor};">
-              <span style="width: 7px; height: 7px; border-radius: 50%; background-color: ${dotColor};"></span>
-              ${status}
-            </span>
           </div>
         </div>
 
         <div style="text-align: right;">
-          <button type="button" id="toggleSetFollowUpBtn" style="background: none; border: none; padding: 4px 0; color: var(--color-text-secondary); font-size: 0.8rem; cursor: pointer; text-decoration: underline;">
-            Set follow-up
-          </button>
+          <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: ${dotColor};">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background-color: ${dotColor};"></span>
+            ${status}
+          </span>
         </div>
       </div>
 
@@ -316,54 +313,33 @@ export function openCustomerProfile(customerId, { store, showToast } = {}) {
       ${
         duplicates.length > 0
           ? `
-        <div style="margin-top: 12px; padding: 8px 12px; background: rgba(246, 243, 238, 0.04); border-left: 2px solid var(--color-text-secondary); font-size: 0.78rem; color: var(--color-text-secondary);">
+        <div style="margin-top: 12px; padding: 8px 12px; background: rgba(246, 243, 238, 0.04); border-left: 2px solid var(--color-text-secondary); font-size: 0.78rem; color: var(--muted-foreground);">
           Possible duplicate of ${escapeHtml(duplicates.map((d) => d.name).join(', '))} (shared phone).
         </div>
       `
           : ''
       }
-
-      <!-- Set Follow-up Form (revealed via text link) -->
-      <div id="setFollowUpPanel" style="display: none; margin-top: 16px; padding: 14px; background: var(--secondary); border: 1px solid var(--border); border-radius: var(--radius);">
-        <div class="label-caps" style="margin-bottom: 8px; font-size: 0.7rem;">Schedule Follow-up</div>
-        <form id="profileFollowUpForm">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-            <div>
-              <label class="form-label" for="profileFollowUpDue" style="font-size: 0.7rem;">Due Date *</label>
-              <input type="date" id="profileFollowUpDue" class="form-input" style="padding: 6px 10px; font-size: 0.82rem;" value="${escapeHtml(customer.follow_up?.due || today)}" required />
-            </div>
-            <div>
-              <label class="form-label" for="profileFollowUpNote" style="font-size: 0.7rem;">Short Note *</label>
-              <input type="text" id="profileFollowUpNote" class="form-input" style="padding: 6px 10px; font-size: 0.82rem;" placeholder="e.g. Call for second fitting" value="${escapeHtml(customer.follow_up?.note || '')}" required />
-            </div>
-          </div>
-          <div style="display: flex; gap: 8px; justify-content: flex-end;">
-            <button type="button" id="cancelFollowUpBtn" class="btn btn-outline btn-sm" style="padding: 4px 12px; font-size: 0.75rem;">Cancel</button>
-            <button type="submit" class="btn btn-primary btn-sm" style="padding: 4px 14px; font-size: 0.75rem;">Save Follow-up</button>
-          </div>
-        </form>
-      </div>
     </div>
 
-    <!-- Section 1: Orders (N) -->
-    <details style="border-bottom: 1px solid var(--border); padding: 14px 0;">
-      <summary style="cursor: pointer; font-weight: 600; font-size: 0.9rem; user-select: none; display: flex; justify-content: space-between; align-items: center;">
-        <span>Orders (${linkedOrders.length})</span>
-        <span style="font-size: 0.75rem; color: var(--color-text-secondary); text-transform: uppercase;">Expand ▾</span>
+    <!-- Accordion 1: Linked Orders -->
+    <details class="profile-accordion" id="accordionOrders" open>
+      <summary class="profile-accordion-summary">
+        <span>Linked Orders (${linkedOrders.length})</span>
+        <span class="disclosure-arrow">▾</span>
       </summary>
-      <div style="padding-top: 14px;">
+      <div class="profile-accordion-content">
         ${
           linkedOrders.length === 0
-            ? '<p style="color: var(--color-text-secondary); font-size: 0.85rem;">No orders yet.</p>'
+            ? '<p style="color: var(--muted-foreground); font-size: 0.85rem; margin: 0;">No orders yet.</p>'
             : `
-            <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
               ${linkedOrders
                 .map(
                   (o) => `
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--secondary); border: 1px solid var(--border); border-radius: var(--radius-sm);">
                   <div>
-                    <div style="font-size: 0.82rem; font-family: monospace; color: var(--color-text-secondary);">${escapeHtml(o.id)}</div>
-                    <div style="font-weight: 500; font-size: 0.9rem;">${escapeHtml(o.design_title)}</div>
+                    <div style="font-size: 0.78rem; font-family: monospace; color: var(--gold);">${escapeHtml(o.id)}</div>
+                    <div style="font-weight: 500; font-size: 0.88rem; color: var(--foreground);">${escapeHtml(o.design_title)}</div>
                   </div>
                   <span class="badge ui-badge-secondary">${escapeHtml(o.status)}</span>
                 </div>
@@ -376,13 +352,13 @@ export function openCustomerProfile(customerId, { store, showToast } = {}) {
       </div>
     </details>
 
-    <!-- Section 2: Measurements -->
-    <details style="border-bottom: 1px solid var(--border); padding: 14px 0;">
-      <summary style="cursor: pointer; font-weight: 600; font-size: 0.9rem; user-select: none; display: flex; justify-content: space-between; align-items: center;">
-        <span>Measurements (${isCm ? 'cm' : 'inches'})</span>
-        <span style="font-size: 0.75rem; color: var(--color-text-secondary); text-transform: uppercase;">Expand ▾</span>
+    <!-- Accordion 2: Measurements -->
+    <details class="profile-accordion" id="accordionMeasurements">
+      <summary class="profile-accordion-summary">
+        <span>Body Measurements (${isCm ? 'cm' : 'inches'})</span>
+        <span class="disclosure-arrow">▾</span>
       </summary>
-      <div style="padding-top: 14px;">
+      <div class="profile-accordion-content">
         <form id="profileMeasurementsForm">
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 14px;">
             ${MEASUREMENT_FIELDS.map((field) => {
@@ -404,7 +380,7 @@ export function openCustomerProfile(customerId, { store, showToast } = {}) {
                     class="form-input measurement-field"
                     data-field="${field}"
                     value="${displayVal}"
-                    style="padding: 8px 10px; font-size: 0.88rem;"
+                    style="padding: 8px 10px; font-size: 0.88rem; min-height: 40px;"
                   />
                   <div class="m-error-msg" id="err_${field}" style="display: none; color: #D9534F; font-size: 0.72rem; margin-top: 4px;"></div>
                 </div>
@@ -413,10 +389,10 @@ export function openCustomerProfile(customerId, { store, showToast } = {}) {
           </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <div style="font-size: 0.75rem; color: var(--color-text-secondary);" id="measurementsUpdatedDate">
+            <div style="font-size: 0.75rem; color: var(--muted-foreground);" id="measurementsUpdatedDate">
               ${m.updated_at ? `Updated ${new Date(m.updated_at).toLocaleDateString()}` : ''}
             </div>
-            <button type="submit" class="btn btn-outline btn-sm" style="padding: 6px 16px; font-size: 0.78rem;">
+            <button type="submit" class="btn btn-outline btn-sm" style="padding: 6px 16px; font-size: 0.78rem; min-height: 40px;">
               Save Measurements
             </button>
           </div>
@@ -424,13 +400,61 @@ export function openCustomerProfile(customerId, { store, showToast } = {}) {
       </div>
     </details>
 
-    <!-- Section 3: Notes -->
-    <details style="border-bottom: 1px solid var(--border); padding: 14px 0;">
-      <summary style="cursor: pointer; font-weight: 600; font-size: 0.9rem; user-select: none; display: flex; justify-content: space-between; align-items: center;">
-        <span>Notes</span>
-        <span style="font-size: 0.75rem; color: var(--color-text-secondary); text-transform: uppercase;">Expand ▾</span>
+    <!-- Accordion 3: Follow-ups & Reminders -->
+    <details class="profile-accordion" id="accordionFollowUps">
+      <summary class="profile-accordion-summary">
+        <span>Follow-ups & Reminders ${customer.follow_up?.due && !customer.follow_up?.done_at ? `• Due ${escapeHtml(customer.follow_up.due)}` : ''}</span>
+        <span class="disclosure-arrow">▾</span>
       </summary>
-      <div style="padding-top: 14px;">
+      <div class="profile-accordion-content">
+        ${
+          customer.follow_up?.due && !customer.follow_up?.done_at
+            ? `
+            <div style="padding: 12px; background: var(--secondary); border: 1px solid var(--border); border-left: 3px solid var(--gold); border-radius: var(--radius-sm); margin-bottom: 12px;">
+              <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--gold); font-weight: 600;">Active Follow-up Due</div>
+              <div style="font-weight: 600; font-size: 0.95rem; margin: 4px 0;">${escapeHtml(customer.follow_up.note || 'Fitting check-in')}</div>
+              <div style="font-size: 0.8rem; color: var(--muted-foreground);">Scheduled for: <strong>${escapeHtml(customer.follow_up.due)}</strong></div>
+            </div>
+          `
+            : '<p style="color: var(--muted-foreground); font-size: 0.85rem; margin: 0 0 10px;">No pending follow-ups scheduled.</p>'
+        }
+
+        <div style="margin-bottom: 10px;">
+          <button type="button" id="toggleSetFollowUpBtn" class="btn btn-outline btn-sm" style="min-height: 38px;">
+            ${customer.follow_up?.due && !customer.follow_up?.done_at ? 'Reschedule follow-up' : '+ Schedule follow-up'}
+          </button>
+        </div>
+
+        <!-- Schedule / Reschedule Follow-up Panel -->
+        <div id="setFollowUpPanel" style="display: none; padding: 14px; background: var(--secondary); border: 1px solid var(--border); border-radius: var(--radius-sm);">
+          <div class="label-caps" style="margin-bottom: 8px; font-size: 0.7rem;">Schedule Follow-up</div>
+          <form id="profileFollowUpForm">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+              <div>
+                <label class="form-label" for="profileFollowUpDue" style="font-size: 0.7rem;">Due Date *</label>
+                <input type="date" id="profileFollowUpDue" class="form-input" style="padding: 6px 10px; font-size: 0.82rem; min-height: 40px;" value="${escapeHtml(customer.follow_up?.due || today)}" required />
+              </div>
+              <div>
+                <label class="form-label" for="profileFollowUpNote" style="font-size: 0.7rem;">Short Note *</label>
+                <input type="text" id="profileFollowUpNote" class="form-input" style="padding: 6px 10px; font-size: 0.82rem; min-height: 40px;" placeholder="e.g. Call for second fitting" value="${escapeHtml(customer.follow_up?.note || '')}" required />
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; justify-content: flex-end;">
+              <button type="button" id="cancelFollowUpBtn" class="btn btn-outline btn-sm" style="padding: 6px 12px; font-size: 0.75rem; min-height: 38px;">Cancel</button>
+              <button type="submit" class="btn btn-primary btn-sm" style="padding: 6px 14px; font-size: 0.75rem; min-height: 38px;">Save Follow-up</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </details>
+
+    <!-- Accordion 4: Notes -->
+    <details class="profile-accordion" id="accordionNotes">
+      <summary class="profile-accordion-summary">
+        <span>Atelier Client Notes</span>
+        <span class="disclosure-arrow">▾</span>
+      </summary>
+      <div class="profile-accordion-content">
         <div style="position: relative;">
           <textarea
             id="profileNotesInput"
@@ -439,15 +463,15 @@ export function openCustomerProfile(customerId, { store, showToast } = {}) {
             style="min-height: 80px; font-size: 0.88rem;"
           >${escapeHtml(customer.notes || '')}</textarea>
           <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
-            <span id="notesSavedIndicator" style="font-size: 0.75rem; color: var(--color-text-secondary); opacity: 0; transition: opacity 200ms;">Saved</span>
+            <span id="notesSavedIndicator" style="font-size: 0.75rem; color: var(--muted-foreground); opacity: 0; transition: opacity 200ms;">Saved</span>
           </div>
         </div>
       </div>
     </details>
 
-    <!-- Low-emphasis delete client button at bottom -->
-    <div style="padding-top: 24px; text-align: center;">
-      <button type="button" id="deleteClientBtn" style="background: none; border: none; color: var(--color-text-muted); font-size: 0.78rem; cursor: pointer; text-decoration: underline; padding: 8px;">
+    <!-- Delete client -->
+    <div style="padding-top: 16px; text-align: center;">
+      <button type="button" id="deleteClientBtn" style="background: none; border: none; color: var(--muted-foreground); font-size: 0.78rem; cursor: pointer; text-decoration: underline; padding: 10px; min-height: 44px;">
         Delete client
       </button>
     </div>

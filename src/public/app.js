@@ -49,19 +49,36 @@ function registerServiceWorker() {
 function initNavigation() {
   const toggleBtn = document.getElementById('mobileNavToggle');
   const drawer = document.getElementById('mobileNavDrawer');
+  const backdrop = document.getElementById('mobileNavBackdrop');
+  const closeBtn = document.getElementById('mobileNavClose');
+
+  const closeDrawer = () => {
+    if (drawer) drawer.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('open');
+    if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+  };
+
+  const openDrawer = () => {
+    if (drawer) drawer.classList.add('open');
+    if (backdrop) backdrop.classList.add('open');
+    if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'true');
+  };
 
   if (toggleBtn && drawer) {
     toggleBtn.addEventListener('click', () => {
-      drawer.classList.toggle('open');
-      const expanded = drawer.classList.contains('open');
-      toggleBtn.setAttribute('aria-expanded', expanded);
+      const isOpen = drawer.classList.contains('open');
+      if (isOpen) {
+        closeDrawer();
+      } else {
+        openDrawer();
+      }
     });
 
+    if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+    if (backdrop) backdrop.addEventListener('click', closeDrawer);
+
     drawer.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', () => {
-        drawer.classList.remove('open');
-        toggleBtn.setAttribute('aria-expanded', false);
-      });
+      link.addEventListener('click', closeDrawer);
     });
   }
 
@@ -85,6 +102,7 @@ function initNavigation() {
 function initGallery() {
   const container = document.getElementById('designsGrid');
   const filterBtns = document.querySelectorAll('.filter-btn');
+  const mobileCatSelect = document.getElementById('galleryCategorySelect');
 
   function renderGallery() {
     if (!container) return;
@@ -116,12 +134,6 @@ function initGallery() {
             </button>
 
             <img src="${escapeHtml(d.image)}" alt="${escapeHtml(d.title)} by Ezekiel" class="card-image" loading="lazy" width="800" height="1000"/>
-
-            <div class="card-overlay-actions">
-              <button class="card-action-btn view-3d-btn" data-slug="${escapeHtml(d.slug)}">3D Preview <span class="badge badge-beta">Beta</span></button>
-              <button class="card-action-btn view-tryon-btn" data-slug="${escapeHtml(d.slug)}">Try-On <span class="badge badge-beta">Beta</span></button>
-              <button class="card-action-btn book-btn" data-slug="${escapeHtml(d.slug)}">Book</button>
-            </div>
           </div>
 
           <div class="card-body">
@@ -133,10 +145,56 @@ function initGallery() {
               <a href="/designs/${escapeHtml(d.slug)}/" class="design-detail-link" data-slug="${escapeHtml(d.slug)}">${escapeHtml(d.title)}</a>
             </h3>
             <p class="card-tagline">${escapeHtml(d.tagline)}</p>
-            <div class="card-footer-row">
-              <span class="label-caps" style="color: var(--color-text-muted);">Lead: ${escapeHtml(d.leadTime)}</span>
-              <a href="/designs/${escapeHtml(d.slug)}/" class="btn btn-outline btn-sm design-detail-link" data-slug="${escapeHtml(d.slug)}">View Piece</a>
+
+            <!-- Primary Action First -->
+            <div class="card-primary-action-wrap">
+              <button class="btn btn-primary ui-btn-gold book-btn card-action-btn" data-action="book" data-slug="${escapeHtml(d.slug)}" style="width: 100%;">
+                Book Bespoke Fitting
+              </button>
             </div>
+
+            <!-- Progressive Disclosure: Sizing, Fabric, Care & Pricing Breakdown -->
+            <details class="card-details-disclosure">
+              <summary class="card-details-summary">
+                <span>Fabric, sizing & preview</span>
+                <span class="disclosure-arrow">▾</span>
+              </summary>
+              <div class="card-disclosure-content">
+                <div class="card-spec-row">
+                  <span class="spec-label">Fabric:</span>
+                  <span class="spec-value">${escapeHtml(d.fabric)}</span>
+                </div>
+                <div class="card-spec-row">
+                  <span class="spec-label">Sizing:</span>
+                  <span class="spec-value">Made-to-measure (Muslin fitting included)</span>
+                </div>
+                <div class="card-spec-row">
+                  <span class="spec-label">Care:</span>
+                  <span class="spec-value">Specialist dry clean only</span>
+                </div>
+                <div class="card-spec-row">
+                  <span class="spec-label">Pricing:</span>
+                  <span class="spec-value">₦50k deposit to book • Balance on delivery</span>
+                </div>
+                <div class="card-spec-row">
+                  <span class="spec-label">Lead Time:</span>
+                  <span class="spec-value">${escapeHtml(d.leadTime)}</span>
+                </div>
+
+                <!-- Secondary Actions inside Disclosure -->
+                <div class="card-secondary-actions">
+                  <button class="card-action-btn view-3d-btn btn btn-outline btn-sm" data-action="3d" data-slug="${escapeHtml(d.slug)}">
+                    3D Preview <span class="badge badge-beta">Beta</span>
+                  </button>
+                  <button class="card-action-btn view-tryon-btn btn btn-outline btn-sm" data-action="tryon" data-slug="${escapeHtml(d.slug)}">
+                    Try-On <span class="badge badge-beta">Beta</span>
+                  </button>
+                  <a href="/designs/${escapeHtml(d.slug)}/" class="btn btn-outline btn-sm design-detail-link" data-slug="${escapeHtml(d.slug)}">
+                    Full Details
+                  </a>
+                </div>
+              </div>
+            </details>
           </div>
         </article>
       `;
@@ -161,9 +219,22 @@ function initGallery() {
       filterBtns.forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
       currentCategory = btn.dataset.category || 'all';
+      if (mobileCatSelect) {
+        mobileCatSelect.value = currentCategory;
+      }
       renderGallery();
     });
   });
+
+  if (mobileCatSelect) {
+    mobileCatSelect.addEventListener('change', () => {
+      currentCategory = mobileCatSelect.value || 'all';
+      filterBtns.forEach((b) => {
+        b.classList.toggle('active', (b.dataset.category || 'all').toLowerCase() === currentCategory.toLowerCase());
+      });
+      renderGallery();
+    });
+  }
 
   renderGallery();
 }
@@ -237,8 +308,33 @@ function open3DModal(design) {
   const container = document.getElementById('threeCanvasWrap');
 
   if (title) title.textContent = `${design.title} — 3D Preview`;
-  openModal('modal3d');
 
+  const nameEl = document.getElementById('modal3dGarmentName');
+  if (nameEl) nameEl.textContent = design.title;
+
+  const priceEl = document.getElementById('modal3dGarmentPrice');
+  if (priceEl) priceEl.textContent = design.priceFormatted;
+
+  const detailsEl = document.getElementById('modal3dDetailsContent');
+  if (detailsEl) {
+    detailsEl.innerHTML = `
+      <div style="margin-bottom: 6px;"><strong>Bespoke Sizing:</strong> Drafted to your anatomical posture measurements. Muslin fitting included.</div>
+      <div style="margin-bottom: 6px;"><strong>Fabric:</strong> ${escapeHtml(design.fabric)}</div>
+      <div style="margin-bottom: 6px;"><strong>Care:</strong> Specialist dry clean only. Store on wide cedar hanger.</div>
+      <div><strong>Pricing:</strong> Total ${escapeHtml(design.priceFormatted)} includes fittings & pressing. ₦50,000 commitment deposit required to book. Lead time: ${escapeHtml(design.leadTime)}.</div>
+    `;
+  }
+
+  const bookBtn = document.getElementById('modal3dBookBtn');
+  if (bookBtn) {
+    bookBtn.onclick = () => {
+      close3DViewer();
+      closeModal('modal3d');
+      openBookingModal(design);
+    };
+  }
+
+  openModal('modal3d');
   open3DViewer(design, container);
 
   const closeBtn = document.getElementById('closeModal3d');
@@ -550,20 +646,77 @@ function openDetailModal(design) {
             <span class="label-caps">${escapeHtml(design.category)}</span>
             <span class="badge ${design.isNewThisWeek ? 'badge-new' : 'badge-beta'}">${design.isNewThisWeek ? 'New Drop' : 'Signature'}</span>
           </div>
-          <h2>${escapeHtml(design.title)}</h2>
-          <div style="font-size: 1.4rem; color: var(--gold-light); font-weight: 600;">${escapeHtml(design.priceFormatted)}</div>
-          <p style="margin-top: 8px;">${escapeHtml(design.description)}</p>
-          
-          <div class="ui-card" style="padding: 12px 16px; margin: 8px 0;">
-            <div style="font-size: 0.85rem; margin-bottom: 4px;"><strong>Fabric:</strong> ${escapeHtml(design.fabric)}</div>
-            <div style="font-size: 0.85rem;"><strong>Lead Time:</strong> ${escapeHtml(design.leadTime)}</div>
+          <h2 style="font-family: var(--font-display); font-size: 1.75rem; margin: 4px 0;">${escapeHtml(design.title)}</h2>
+          <div style="font-size: 1.4rem; color: var(--gold-text); font-weight: 700;">${escapeHtml(design.priceFormatted)}</div>
+          <p style="margin: 8px 0 12px; font-size: 0.95rem; color: var(--foreground);">${escapeHtml(design.description)}</p>
+
+          <!-- Primary Action First -->
+          <div style="margin-bottom: 12px;">
+            <button class="btn btn-primary ui-btn-gold" id="detailBookBtn" style="width: 100%; min-height: 48px; font-size: 0.95rem;">Book Bespoke Fitting</button>
           </div>
 
-          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
-            <button class="btn btn-primary ui-btn-gold" id="detailBookBtn">Book Bespoke Fitting</button>
-            <button class="btn btn-outline" id="detail3dBtn">3D Preview (Beta)</button>
-            <button class="btn btn-outline" id="detailTryonBtn">Try-On (Beta)</button>
-            <a href="${escapeHtml(waShareUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="border-color: rgba(37, 211, 102, 0.4); color: #25D366;">
+          <!-- Progressive Disclosure Accordions: Sizing, Fabric, Care & Pricing Breakdowns -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <details class="detail-accordion" open>
+              <summary class="detail-accordion-summary">
+                <span>Fabric & Artisanal Textile</span>
+                <span class="disclosure-arrow">▾</span>
+              </summary>
+              <div class="detail-accordion-content">
+                <div><strong>Textile:</strong> ${escapeHtml(design.fabric)}</div>
+                <div style="margin-top: 4px;">Precision hand-cut and reinforced with luxury lining. Hand-embossed geometric threading.</div>
+              </div>
+            </details>
+
+            <details class="detail-accordion">
+              <summary class="detail-accordion-summary">
+                <span>Bespoke Sizing & Fitting Process</span>
+                <span class="disclosure-arrow">▾</span>
+              </summary>
+              <div class="detail-accordion-content">
+                <div>Individual anatomical pattern drafted to your exact proportions (Chest, shoulders, buba length, trouser inseam).</div>
+                <div style="margin-top: 4px;">Includes 2 personal fittings (muslin mock-up and final fit adjustments) in our Victoria Island atelier or your residence.</div>
+              </div>
+            </details>
+
+            <details class="detail-accordion">
+              <summary class="detail-accordion-summary">
+                <span>Garment Care & Longevity</span>
+                <span class="disclosure-arrow">▾</span>
+              </summary>
+              <div class="detail-accordion-content">
+                <div>Specialist dry clean only. Steam press gently on reverse side. Delivered with complimentary wide cedar hanger and dust-proof atelier garment bag.</div>
+              </div>
+            </details>
+
+            <details class="detail-accordion">
+              <summary class="detail-accordion-summary">
+                <span>Pricing & Deposit Breakdown</span>
+                <span class="disclosure-arrow">▾</span>
+              </summary>
+              <div class="detail-accordion-content">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                  <span>Total Bespoke Price:</span>
+                  <strong>${escapeHtml(design.priceFormatted)}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                  <span>Commitment Deposit:</span>
+                  <span style="color: var(--gold-text); font-weight: 600;">₦50,000 (Credited)</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                  <span>Balance on Delivery:</span>
+                  <span>Payable upon final fit sign-off</span>
+                </div>
+                <div style="margin-top: 6px; font-size: 0.75rem;">Lead Time: ${escapeHtml(design.leadTime)}</div>
+              </div>
+            </details>
+          </div>
+
+          <!-- Secondary Actions -->
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+            <button class="btn btn-outline" id="detail3dBtn" style="flex: 1; min-height: 44px;">3D Preview (Beta)</button>
+            <button class="btn btn-outline" id="detailTryonBtn" style="flex: 1; min-height: 44px;">Try-On (Beta)</button>
+            <a href="${escapeHtml(waShareUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="border-color: rgba(37, 211, 102, 0.4); color: #25D366; min-height: 44px; display: inline-flex; align-items: center; justify-content: center;">
               Share on WhatsApp
             </a>
           </div>
@@ -745,7 +898,7 @@ function openWishlistModal() {
                 <img src="${escapeHtml(d.image)}" alt="${escapeHtml(d.title)}" style="width: 54px; height: 68px; object-fit: cover; border-radius: 2px;" />
                 <div>
                   <h4 style="font-size: 1.05rem;">${escapeHtml(d.title)}</h4>
-                  <div style="color: var(--color-gold); font-size: 0.9rem;">${escapeHtml(d.priceFormatted)}</div>
+                  <div style="color: var(--gold-text); font-size: 0.9rem; font-weight: 600;">${escapeHtml(d.priceFormatted)}</div>
                 </div>
               </div>
               <div style="display: flex; gap: 8px;">
@@ -806,7 +959,7 @@ function renderRecentlyViewed() {
     container.innerHTML = recentDesigns.map((d) => `
       <div class="drop-pill" style="cursor: pointer;" onclick="window.openDesignDetail('${escapeHtml(d.slug)}')">
         <span>${escapeHtml(d.title)}</span>
-        <span style="color: var(--color-gold);">${escapeHtml(d.priceFormatted)}</span>
+        <span style="color: var(--gold-text); font-weight: 600;">${escapeHtml(d.priceFormatted)}</span>
       </div>
     `).join('');
   } catch (e) {}
@@ -885,13 +1038,28 @@ function showToast(message) {
   }, 3200);
 }
 
-// IntersectionObserver for Staggered Section Reveals
+// IntersectionObserver for Staggered Section Reveals (Progressive Enhancement)
 function initScrollReveals() {
   // If user prefers reduced motion, skip animations
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.querySelectorAll('.reveal-on-scroll').forEach((el) => el.classList.add('revealed'));
     return;
   }
+
+  // Progressive enhancement fallback if IntersectionObserver is not supported
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('.reveal-on-scroll').forEach((el) => el.classList.add('revealed'));
+    return;
+  }
+
+  // Enable animation styles by adding class to html
+  document.documentElement.classList.add('js-reveal');
+
+  const isNearViewport = (el) => {
+    const rect = el.getBoundingClientRect();
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+    return rect.top <= windowHeight + 200 && rect.bottom >= -200;
+  };
 
   const observer = new IntersectionObserver(
     (entries, obs) => {
@@ -905,12 +1073,24 @@ function initScrollReveals() {
         }
       });
     },
-    { threshold: 0.1 }
+    { threshold: 0.05, rootMargin: '100px' }
   );
 
-  document.querySelectorAll('.reveal-on-scroll:not(.revealed)').forEach((el) => {
-    observer.observe(el);
+  document.querySelectorAll('.reveal-on-scroll').forEach((el) => {
+    // Reveal immediately if already in or near viewport on load
+    if (isNearViewport(el)) {
+      el.classList.add('revealed');
+    } else if (!el.classList.contains('revealed')) {
+      observer.observe(el);
+    }
   });
+
+  // Safety fallback: reveal all elements after timeout (prevents blank sections in headless screenshots)
+  setTimeout(() => {
+    document.querySelectorAll('.reveal-on-scroll:not(.revealed)').forEach((el) => {
+      el.classList.add('revealed');
+    });
+  }, 1200);
 }
 
 // Handle Direct URLs / Query params (e.g. ?design=imperial-agbada)

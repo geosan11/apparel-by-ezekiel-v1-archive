@@ -135,7 +135,7 @@
     }
   </style>
 </head>
-<body style="background-color: var(--color-bg);">
+<body class="admin-body">
 
   <!-- Top Store Version / Blocked Banner -->
   <div id="storeNoticeBanner" style="display: none; position: sticky; top: 0; z-index: 100; background: var(--color-bg-elevated); color: var(--color-text-primary); border-bottom: 1px solid var(--color-gold); padding: 12px 24px; text-align: center; font-size: 0.85rem;"></div>
@@ -292,27 +292,36 @@
 
       <!-- TAB 2: ORDERS -->
       <section id="tab-orders" class="admin-tab-screen" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
-          <div style="display: flex; gap: 12px; align-items: center;">
-            <select id="orderSourceFilter" class="form-select ui-select" style="width: auto; padding: 6px 12px; height: 2rem; font-size: 0.8125rem;">
-              <option value="all">All Sources</option>
-              <option value="WhatsApp">WhatsApp</option>
-              <option value="Instagram">Instagram</option>
-              <option value="Walk-in">Walk-in</option>
-              <option value="Site">Site</option>
-            </select>
-            <select id="orderStatusFilter" class="form-select ui-select" style="width: auto; padding: 6px 12px; height: 2rem; font-size: 0.8125rem;">
-              <option value="all">All Statuses</option>
-              <option value="Pending">Pending</option>
-              <option value="Confirmed">Confirmed</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Ready">Ready</option>
-              <option value="Delivered">Delivered</option>
-              <option value="Cancelled">Cancelled</option>
-            </select>
-          </div>
+        <div class="orders-toolbar">
+          <details class="admin-filters-disclosure" id="orderFiltersDisclosure">
+            <summary class="admin-filters-summary">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+              </svg>
+              <span>Filters</span>
+              <span class="disclosure-arrow">▾</span>
+            </summary>
+            <div class="admin-filters-body">
+              <select id="orderSourceFilter" class="form-select ui-select" style="width: auto; padding: 6px 12px; height: 2.25rem; font-size: 0.8125rem;">
+                <option value="all">All Sources</option>
+                <option value="WhatsApp">WhatsApp</option>
+                <option value="Instagram">Instagram</option>
+                <option value="Walk-in">Walk-in</option>
+                <option value="Site">Site</option>
+              </select>
+              <select id="orderStatusFilter" class="form-select ui-select" style="width: auto; padding: 6px 12px; height: 2.25rem; font-size: 0.8125rem;">
+                <option value="all">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Ready">Ready</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+          </details>
 
-          <button class="btn btn-primary btn-sm ui-btn ui-btn-primary ui-btn-sm" onclick="document.getElementById('newOrderModal').classList.add('open')">
+          <button class="btn btn-primary btn-sm ui-btn ui-btn-primary ui-btn-sm" id="btnRecordManualOrder" onclick="document.getElementById('newOrderModal').classList.add('open')">
             + Record Manual Order
           </button>
         </div>

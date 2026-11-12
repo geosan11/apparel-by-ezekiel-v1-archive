@@ -2,8 +2,10 @@ import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const outDir = process.argv[2] || 'docs/screenshots/redesign/before';
+const outDir = process.argv[2] || 'docs/screenshots/redesign/after';
 fs.mkdirSync(outDir, { recursive: true });
+const apparelShotsDir = '/workspace/apparel_shots';
+fs.mkdirSync(apparelShotsDir, { recursive: true });
 
 const PORT = 5199;
 const CDP_PORT = 9447;
@@ -11,7 +13,7 @@ const PROFILE_DIR = `/tmp/chrome-profile-${Date.now()}`;
 fs.mkdirSync(PROFILE_DIR, { recursive: true });
 
 console.log(`Starting Vite dev server on port ${PORT}...`);
-const vite = spawn('npx', ['vite', '--port', String(PORT), '--strictPort'], {
+const vite = spawn('npx', ['vite', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'], {
   stdio: 'inherit',
   cwd: process.cwd()
 });
@@ -99,13 +101,35 @@ const viewports = [
   { tag: 'mobile', width: 390, height: 844, mobile: true }
 ];
 
-async function capture(filename) {
+async function capture(filename, apparelShotName = null) {
   await sleep(600);
   const shot = await send('Page.captureScreenshot', { format: 'png' });
   const buf = Buffer.from(shot.result.data, 'base64');
   const filepath = path.join(outDir, filename);
   fs.writeFileSync(filepath, buf);
   console.log(`Saved screenshot: ${filepath}`);
+
+  if (apparelShotName) {
+    const shotPath = path.join(apparelShotsDir, apparelShotName);
+    fs.writeFileSync(shotPath, buf);
+    console.log(`Saved copy to apparel_shots: ${shotPath}`);
+  }
+}
+
+async function captureFullPage(filename, apparelShotName = null) {
+  await sleep(600);
+  const shot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true });
+  const buf = Buffer.from(shot.result.data, 'base64');
+  if (filename) {
+    const filepath = path.join(outDir, filename);
+    fs.writeFileSync(filepath, buf);
+    console.log(`Saved full-page screenshot: ${filepath}`);
+  }
+  if (apparelShotName) {
+    const shotPath = path.join(apparelShotsDir, apparelShotName);
+    fs.writeFileSync(shotPath, buf);
+    console.log(`Saved copy to apparel_shots: ${shotPath}`);
+  }
 }
 
 try {
@@ -121,12 +145,47 @@ try {
     // 1. PUBLIC NAV & HERO
     await send('Page.navigate', { url: `http://127.0.0.1:${PORT}/` });
     await sleep(2000);
-    await capture(`01-public-nav-hero-${vp.tag}.png`);
+    const heroOverflow = await evaluate(`({ clientWidth: document.documentElement.clientWidth, scrollWidth: document.documentElement.scrollWidth })`);
+    console.log(`[Viewport ${vp.tag}] Home dimensions: clientWidth=${heroOverflow?.clientWidth}, scrollWidth=${heroOverflow?.scrollWidth}`);
+    
+    // Viewport shot
+    const deskOrMobName = vp.mobile ? 'light_mobile.png' : 'light_desk.png';
+    await capture(`01-public-nav-hero-${vp.tag}.png`, deskOrMobName);
+    if (vp.mobile) {
+      fs.copyFileSync(path.join(apparelShotsDir, 'light_mobile.png'), path.join(apparelShotsDir, 'mobile_disclosure_homepage.png'));
+    }
 
-    // 2. PUBLIC GALLERY SCROLLED
+    // Ensure all reveal elements are visible and capture full page
+    await evaluate(`document.querySelectorAll('.reveal-on-scroll').forEach(el => el.classList.add('revealed'))`);
+    await sleep(500);
+    const fullDeskOrMobName = vp.mobile ? 'light_full_mobile.png' : 'light_full_desk.png';
+    await captureFullPage(null, fullDeskOrMobName);
+
+    // 2. PUBLIC GALLERY SCROLLED (with card progressive disclosure open)
     await evaluate(`window.scrollTo(0, 750)`);
     await sleep(800);
-    await capture(`02-public-gallery-${vp.tag}.png`);
+    if (vp.mobile) {
+      // Open progressive disclosure accordion on the first design card
+      await evaluate(`
+        const disc = document.querySelector('.card-details-disclosure');
+        if (disc) disc.setAttribute('open', '');
+      `);
+      await sleep(400);
+    }
+    await capture(`02-public-gallery-${vp.tag}.png`, vp.mobile ? 'mobile_disclosure_gallery_card.png' : null);
+
+    // 2b. PUBLIC DESIGN DETAIL MODAL (showing progressive disclosure accordions)
+    await evaluate(`
+      const detailLink = document.querySelector('.design-detail-link');
+      if (detailLink) detailLink.click();
+    `);
+    await sleep(800);
+    await capture(`02b-public-detail-${vp.tag}.png`, vp.mobile ? 'mobile_disclosure_detail.png' : null);
+    await evaluate(`
+      document.querySelector('#modalDetail .modal-close-btn')?.click();
+      document.getElementById('modalDetail')?.classList.remove('open');
+    `);
+    await sleep(400);
 
     // 3. 3D PREVIEW MODAL
     await evaluate(`
@@ -158,7 +217,7 @@ try {
     `);
     await sleep(500);
 
-    // 5. BOOKING FORM MODAL
+    // 5. BOOKING FORM MODAL (with optional details disclosure open)
     await evaluate(`
       const bookBtn = document.querySelector('.design-card') ? document.querySelector('.card-action-btn[data-action="book"]') : null;
       if (bookBtn) {
@@ -167,10 +226,16 @@ try {
         document.getElementById('modalBooking')?.classList.add('open');
       }
     `);
-    await sleep(1000);
-    await capture(`05-public-booking-form-${vp.tag}.png`);
+    await sleep(800);
+    // Expand optional details disclosure
+    await evaluate(`
+      const optDetails = document.getElementById('bookingOptionalDetails');
+      if (optDetails) optDetails.setAttribute('open', '');
+    `);
+    await sleep(400);
+    await capture(`05-public-booking-form-${vp.tag}.png`, vp.mobile ? 'mobile_disclosure_booking.png' : null);
 
-    // 6. PAYMENT / DEPOSIT SUMMARY
+    // 6. PAYMENT / DEPOSIT SUMMARY (with deposit breakdown disclosure open)
     await evaluate(`
       document.getElementById('bookingName').value = 'Chief Adebayo Alabi';
       document.getElementById('bookingPhone').value = '+234 803 123 4567';
@@ -179,7 +244,13 @@ try {
       form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
     `);
     await sleep(1200);
-    await capture(`06-payment-deposit-summary-${vp.tag}.png`);
+    // Expand deposit breakdown disclosure
+    await evaluate(`
+      const depBreakdown = document.querySelector('.deposit-breakdown-disclosure');
+      if (depBreakdown) depBreakdown.setAttribute('open', '');
+    `);
+    await sleep(400);
+    await capture(`06-payment-deposit-summary-${vp.tag}.png`, vp.mobile ? 'mobile_disclosure_payment.png' : null);
 
     // 7. OPAY MODAL
     await evaluate(`
@@ -215,19 +286,35 @@ try {
     // 9. ADMIN OVERVIEW
     await capture(`09-admin-overview-${vp.tag}.png`);
 
-    // 10. ADMIN ORDERS TAB
+    // 10. ADMIN ORDERS TAB (with filters disclosure and order card accordion open)
     await evaluate(`
       document.querySelector('button[data-tab="orders"]')?.click();
     `);
     await sleep(1000);
-    await capture(`10-admin-orders-${vp.tag}.png`);
+    if (vp.mobile) {
+      await evaluate(`
+        const filtersDisc = document.getElementById('orderFiltersDisclosure');
+        if (filtersDisc) filtersDisc.setAttribute('open', '');
+        const orderCardDisc = document.querySelector('.order-card-accordion');
+        if (orderCardDisc) orderCardDisc.setAttribute('open', '');
+      `);
+      await sleep(400);
+    }
+    await capture(`10-admin-orders-${vp.tag}.png`, vp.mobile ? 'mobile_disclosure_admin_orders.png' : null);
 
-    // 11. ADMIN ORDER DETAIL SHEET (Client profile from orders)
+    // 11. ADMIN ORDER DETAIL SHEET (Client profile from orders, with accordions)
     await evaluate(`
       const clientLink = document.querySelector('.order-client-profile-link');
       if (clientLink) clientLink.click();
     `);
     await sleep(1000);
+    if (vp.mobile) {
+      await evaluate(`
+        const mAcc = document.getElementById('accordionMeasurements');
+        if (mAcc) mAcc.setAttribute('open', '');
+      `);
+      await sleep(400);
+    }
     await capture(`11-admin-order-sheet-${vp.tag}.png`);
     // Close client profile modal
     await evaluate(`

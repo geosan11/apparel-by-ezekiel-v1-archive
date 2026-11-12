@@ -533,31 +533,74 @@ function renderOrders() {
     }[o.source] || 'ui-badge-secondary';
 
     return `
-      <tr>
-        <td style="font-family: monospace; font-size: 0.82rem; color: var(--color-gold);">${escapeHtml(o.id)}</td>
-        <td>${clientHtml}</td>
-        <td>
-          <div>${escapeHtml(o.design_title)}</div>
+      <tr class="order-row-card">
+        <td class="col-ref" style="font-family: monospace; font-size: 0.82rem; color: var(--color-gold);">${escapeHtml(o.id)}</td>
+        <td class="col-client">${clientHtml}</td>
+        <td class="col-garment">
+          <div style="font-weight: 500;">${escapeHtml(o.design_title)}</div>
           <div style="font-size: 0.75rem; color: var(--color-text-muted);">Fitting: ${escapeHtml(o.fitting_date || 'N/A')}</div>
         </td>
-        <td>
+        <td class="col-source">
           <span class="badge ${channelClass}">${escapeHtml(o.source)}</span>
         </td>
-        <td>
-          <div><strong>${formatNaira(o.amount)}</strong></div>
+        <td class="col-amount">
+          <div><strong style="font-size: 0.95rem;">${formatNaira(o.amount)}</strong></div>
           <div style="font-size: 0.75rem; color: ${o.deposit_status === 'paid' ? 'var(--success)' : 'var(--color-text-muted)'};">
             Dep: ${formatNaira(o.deposit_amount)} (${escapeHtml(o.deposit_status)})
           </div>
         </td>
-        <td>
-          <select class="form-select status-select" data-order-id="${escapeHtml(o.id)}" style="padding: 4px 8px; font-size: 0.8rem;">
+        <td class="col-status">
+          <select class="form-select status-select" data-order-id="${escapeHtml(o.id)}" style="padding: 6px 8px; font-size: 0.8125rem; min-height: 40px;">
             ${['Pending', 'Confirmed', 'In Progress', 'Ready', 'Delivered', 'Cancelled'].map((s) => `
               <option value="${s}" ${o.status === s ? 'selected' : ''}>${s}</option>
             `).join('')}
           </select>
         </td>
-        <td>
-          <button class="btn btn-outline btn-sm delete-order-btn ui-btn-destructive" data-order-id="${escapeHtml(o.id)}" style="padding: 4px 8px; border-color: transparent;">✕</button>
+        <td class="col-actions">
+          <button class="btn btn-outline btn-sm delete-order-btn ui-btn-destructive" data-order-id="${escapeHtml(o.id)}" style="padding: 6px 10px; border-color: transparent; min-height: 40px; min-width: 40px;" title="Delete order" aria-label="Delete order">✕</button>
+        </td>
+        <!-- Mobile Card Progressive Disclosure (Revealed on small screens) -->
+        <td class="col-mobile-disclosure" style="display: none;">
+          <details class="order-card-accordion">
+            <summary class="order-card-summary">
+              <span>Order details & actions</span>
+              <span class="disclosure-arrow">▾</span>
+            </summary>
+            <div class="order-card-expanded">
+              <div class="order-detail-line">
+                <span class="label-caps" style="color: var(--muted-foreground);">Order Ref:</span>
+                <span style="font-family: monospace; color: var(--color-gold);">${escapeHtml(o.id)}</span>
+              </div>
+              <div class="order-detail-line">
+                <span class="label-caps" style="color: var(--muted-foreground);">Fitting Date:</span>
+                <span>${escapeHtml(o.fitting_date || 'N/A')}</span>
+              </div>
+              <div class="order-detail-line">
+                <span class="label-caps" style="color: var(--muted-foreground);">Source Channel:</span>
+                <span class="badge ${channelClass}">${escapeHtml(o.source)}</span>
+              </div>
+              <div class="order-detail-line">
+                <span class="label-caps" style="color: var(--muted-foreground);">Deposit Status:</span>
+                <span style="color: ${o.deposit_status === 'paid' ? 'var(--success)' : 'inherit'};">
+                  ${formatNaira(o.deposit_amount)} (${escapeHtml(o.deposit_status)})
+                </span>
+              </div>
+              
+              <div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); display: flex; align-items: flex-end; gap: 8px;">
+                <div style="flex: 1;">
+                  <label class="form-label" style="font-size: 0.72rem; margin-bottom: 4px;">Update Status</label>
+                  <select class="form-select status-select" data-order-id="${escapeHtml(o.id)}" style="width: 100%; min-height: 44px; font-size: 0.85rem;">
+                    ${['Pending', 'Confirmed', 'In Progress', 'Ready', 'Delivered', 'Cancelled'].map((s) => `
+                      <option value="${s}" ${o.status === s ? 'selected' : ''}>${s}</option>
+                    `).join('')}
+                  </select>
+                </div>
+                <button class="btn btn-outline btn-sm delete-order-btn ui-btn-destructive" data-order-id="${escapeHtml(o.id)}" style="min-height: 44px; padding: 0 16px;" title="Delete order">
+                  Delete
+                </button>
+              </div>
+            </div>
+          </details>
         </td>
       </tr>
     `;

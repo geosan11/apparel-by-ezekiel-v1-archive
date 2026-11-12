@@ -52,12 +52,24 @@
       </div>
     </div>
 
-    <!-- Mobile Drawer -->
-    <div class="mobile-nav-drawer" id="mobileNavDrawer">
-      <a href="#gallery" class="nav-link">Collections</a>
-      <a href="#booking" class="nav-link" onclick="document.getElementById('heroBookBtn').click();">Bespoke Fitting</a>
-      <a href="/admin.html" class="nav-link">Atelier Portal (Admin)</a>
-      <a href="#" class="nav-link" id="openPrivacyBtn">Privacy Notice (NDPA)</a>
+    <!-- Mobile Drawer / Sheet Backdrop -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
+    <div class="mobile-nav-drawer" id="mobileNavDrawer" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
+      <div class="mobile-nav-header">
+        <span class="brand-wordmark" style="font-size: 1.15rem;">APPAREL BY <span>EZEKIEL</span></span>
+        <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close navigation menu">✕</button>
+      </div>
+      <div class="mobile-nav-links">
+        <a href="#gallery" class="nav-link">Collections</a>
+        <a href="#booking" class="nav-link" onclick="document.getElementById('mobileNavClose').click(); document.getElementById('heroBookBtn').click();">Bespoke Fitting</a>
+        <a href="/admin.html" class="nav-link">Atelier Portal (Admin)</a>
+        <a href="#" class="nav-link" id="openPrivacyBtn">Privacy Notice (NDPA)</a>
+      </div>
+      <div class="mobile-nav-footer">
+        <button class="btn btn-primary ui-btn-gold" style="width: 100%; min-height: 48px;" onclick="document.getElementById('mobileNavClose').click(); document.getElementById('heroBookBtn').click();">
+          Book Private Fitting
+        </button>
+      </div>
     </div>
   </header>
 
@@ -72,15 +84,15 @@
         <div class="drop-strip-items">
           <div class="drop-pill" style="cursor: pointer;" onclick="window.openDesignDetail('imperial-agbada')">
             <span>The Imperial Agbada</span>
-            <span style="color: var(--color-gold);">₦385,000</span>
+            <span style="color: var(--gold-text); font-weight: 600;">₦385,000</span>
           </div>
           <div class="drop-pill" style="cursor: pointer;" onclick="window.openDesignDetail('royal-velvet-kaftan')">
             <span>Royal Velvet Kaftan</span>
-            <span style="color: var(--color-gold);">₦260,000</span>
+            <span style="color: var(--gold-text); font-weight: 600;">₦260,000</span>
           </div>
           <div class="drop-pill" style="cursor: pointer;" onclick="window.openDesignDetail('signature-safari-jacket')">
             <span>Ezekiel Safari Cut</span>
-            <span style="color: var(--color-gold);">₦230,000</span>
+            <span style="color: var(--gold-text); font-weight: 600;">₦230,000</span>
           </div>
         </div>
       </div>
@@ -134,14 +146,28 @@
           </p>
         </div>
 
-        <!-- Filter tabs -->
-        <div class="gallery-filters reveal-on-scroll" role="tablist" aria-label="Design categories">
-          <button class="filter-btn active" data-category="all" role="tab">All Pieces</button>
-          <button class="filter-btn" data-category="Agbada" role="tab">Agbada</button>
-          <button class="filter-btn" data-category="Senator" role="tab">Senator</button>
-          <button class="filter-btn" data-category="Kaftan" role="tab">Kaftan</button>
-          <button class="filter-btn" data-category="Suits & Tuxedos" role="tab">Tuxedos</button>
-          <button class="filter-btn" data-category="Contemporary" role="tab">Contemporary</button>
+        <!-- Filter tabs: Horizontal Scroll Chips & Compact Mobile Select -->
+        <div class="gallery-filters-wrapper">
+          <div class="gallery-filters reveal-on-scroll" role="tablist" aria-label="Design categories">
+            <button class="filter-btn active" data-category="all" role="tab">All Pieces</button>
+            <button class="filter-btn" data-category="Agbada" role="tab">Agbada</button>
+            <button class="filter-btn" data-category="Senator" role="tab">Senator</button>
+            <button class="filter-btn" data-category="Kaftan" role="tab">Kaftan</button>
+            <button class="filter-btn" data-category="Suits & Tuxedos" role="tab">Tuxedos</button>
+            <button class="filter-btn" data-category="Contemporary" role="tab">Contemporary</button>
+          </div>
+        </div>
+
+        <div class="gallery-mobile-select-wrap">
+          <label for="galleryCategorySelect" class="label-caps" style="display: block; margin-bottom: 6px; font-size: 0.72rem;">Browse Category</label>
+          <select id="galleryCategorySelect" class="form-select ui-select" style="width: 100%; min-height: 44px; font-size: 0.88rem;" aria-label="Filter collections by category">
+            <option value="all">All Pieces (8)</option>
+            <option value="Agbada">Agbada</option>
+            <option value="Senator">Senator</option>
+            <option value="Kaftan">Kaftan</option>
+            <option value="Suits & Tuxedos">Tuxedos</option>
+            <option value="Contemporary">Contemporary</option>
+          </select>
         </div>
 
         <!-- Asymmetric Designs Grid -->
@@ -206,7 +232,7 @@
         </div>
         <div style="display: flex; gap: 16px;">
           <a href="#" id="footerPrivacyLink" onclick="event.preventDefault(); document.getElementById('openPrivacyBtn').click();">Privacy Notice (NDPA 2023)</a>
-          <span style="color: var(--color-gold);">Simulated Experience</span>
+          <span style="color: var(--gold-text); font-weight: 500;">Simulated Experience</span>
         </div>
       </div>
     </div>
@@ -218,7 +244,7 @@
 
   <!-- 1. 3D Preview Modal (Beta) -->
   <div class="modal-backdrop" id="modal3d" role="dialog" aria-modal="true" aria-labelledby="modal3dTitle">
-    <div class="modal-panel modal-panel-lg">
+    <div class="modal-panel modal-panel-lg" style="max-height: 90vh; display: flex; flex-direction: column;">
       <div class="modal-header">
         <div style="display: flex; align-items: center; gap: 8px;">
           <h3 id="modal3dTitle" style="font-size: 1.25rem;">3D Garment Preview</h3>
@@ -226,10 +252,38 @@
         </div>
         <button class="modal-close-btn" id="closeModal3d" aria-label="Close 3D Preview">✕</button>
       </div>
-      <div class="modal-content" style="padding: 0;">
+      <div class="modal-content" style="padding: 0; flex: 1; overflow-y: auto;">
         <div class="three-canvas-wrap" id="threeCanvasWrap"></div>
-        <div style="padding: 12px 16px; background: var(--color-bg-card); display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--color-text-secondary); border-top: 1px solid var(--color-border-subtle);">
-          <span>Drag to orbit • Damped auto-rotation resumes on idle • High-DPI capped</span>
+
+        <!-- Primary Info & Action First -->
+        <div style="padding: 14px 16px; background: var(--card); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <div id="modal3dGarmentName" style="font-weight: 600; font-size: 1.15rem; color: var(--foreground);">Imperial Agbada</div>
+            <div id="modal3dGarmentPrice" style="color: var(--gold-text); font-weight: 700; font-size: 1.2rem;">₦385,000</div>
+          </div>
+          <button class="btn btn-primary ui-btn-gold" id="modal3dBookBtn" style="min-height: 44px; padding: 0 20px;">
+            Book Bespoke Fitting
+          </button>
+        </div>
+
+        <!-- Collapsible Specifications & Pricing Breakdown -->
+        <div style="padding: 0 16px 14px;">
+          <details class="detail-accordion" style="margin-top: 8px;">
+            <summary class="detail-accordion-summary">
+              <span>Garment Specifications & Pricing Breakdown</span>
+              <span class="disclosure-arrow">▾</span>
+            </summary>
+            <div class="detail-accordion-content" id="modal3dDetailsContent">
+              <div style="margin-bottom: 6px;"><strong>Bespoke Sizing:</strong> Drafted to 12 anatomical posture measurements. Muslin fitting included.</div>
+              <div style="margin-bottom: 6px;"><strong>Fabric:</strong> Handpicked luxury textile with metallic thread accents.</div>
+              <div style="margin-bottom: 6px;"><strong>Care:</strong> Specialist dry clean only. Store on wide cedar hanger.</div>
+              <div><strong>Pricing:</strong> Total price includes private atelier consultations & fittings. ₦50,000 commitment deposit required to book.</div>
+            </div>
+          </details>
+        </div>
+
+        <div style="padding: 10px 16px; background: var(--secondary); display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--muted-foreground); border-top: 1px solid var(--border);">
+          <span>Drag to orbit • Damped auto-rotation • High-DPI capped</span>
           <span class="badge badge-beta">Procedural Garment Mesh</span>
         </div>
       </div>
@@ -258,7 +312,7 @@
               <span id="tryonStatusText"></span>
             </div>
             <div class="tryon-privacy-note">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:-1px;margin-right:4px;color:var(--color-gold);">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:-1px;margin-right:4px;color:var(--gold-text);">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
@@ -361,17 +415,26 @@
               <input type="date" id="bookingDate" class="form-input" required />
             </div>
 
-            <div class="form-group">
-              <label for="bookingDesignSelect" class="form-label">Selected Design</label>
-              <select id="bookingDesignSelect" class="form-select"></select>
-            </div>
+            <!-- Expandable Optional Details -->
+            <details class="form-disclosure" id="bookingOptionalDetails">
+              <summary class="form-disclosure-summary">
+                <span>+ More details (Design choice & fitting notes)</span>
+                <span class="disclosure-arrow">▾</span>
+              </summary>
+              <div class="form-disclosure-content">
+                <div class="form-group">
+                  <label for="bookingDesignSelect" class="form-label">Selected Design</label>
+                  <select id="bookingDesignSelect" class="form-select"></select>
+                </div>
 
-            <div class="form-group">
-              <label for="bookingNotes" class="form-label">Fitting Notes / Preferred Location</label>
-              <textarea id="bookingNotes" class="form-textarea" placeholder="Provide any measurement preferences, special occasion date, or venue instructions..."></textarea>
-            </div>
+                <div class="form-group">
+                  <label for="bookingNotes" class="form-label">Fitting Notes / Preferred Location</label>
+                  <textarea id="bookingNotes" class="form-textarea" placeholder="Provide any measurement preferences, special occasion date, or venue instructions..."></textarea>
+                </div>
+              </div>
+            </details>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Proceed to Fitting Reservation</button>
+            <button type="submit" class="btn btn-primary" style="width: 100%; min-height: 48px; margin-top: 8px;">Proceed to Fitting Reservation</button>
           </form>
         </div>
 
@@ -387,17 +450,49 @@
 
           <div class="ui-card" style="padding: var(--space-4); margin-bottom: var(--space-5); text-align: left;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 0.875rem; color: var(--muted-foreground);">Fitting Commitment Deposit:</span>
-              <strong style="font-size: 1.1rem; color: var(--foreground);">₦50,000</strong>
+              <div>
+                <span class="label-caps" style="font-size: 0.72rem; color: var(--muted-foreground); display: block;">Total Due Now</span>
+                <span style="font-size: 0.95rem; font-weight: 500; color: var(--foreground);">Fitting Commitment Deposit:</span>
+              </div>
+              <strong style="font-size: 1.35rem; color: var(--gold-text); font-family: var(--font-body);">₦50,000</strong>
             </div>
+
+            <!-- Collapsible Deposit Breakdown -->
+            <details class="deposit-breakdown-disclosure" style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 8px;">
+              <summary class="breakdown-summary" style="font-size: 0.8rem; color: var(--muted-foreground); cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none;">
+                <span>View deposit breakdown</span>
+                <span class="disclosure-arrow">▾</span>
+              </summary>
+              <div style="padding-top: 10px; font-size: 0.825rem; display: flex; flex-direction: column; gap: 6px; color: var(--foreground);">
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--muted-foreground);">Private Atelier Consultation & Slot Hold</span>
+                  <span>₦30,000</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--muted-foreground);">Muslin Drafting & Pattern Allocation</span>
+                  <span>₦20,000</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--muted-foreground);">Processing & Platform Fee</span>
+                  <span style="color: var(--success);">₦0 (Free)</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-top: 1px dashed var(--border); padding-top: 6px; font-weight: 600;">
+                  <span>Commitment Deposit Total</span>
+                  <span style="color: var(--gold-text);">₦50,000</span>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--muted-foreground); margin-top: 4px; line-height: 1.4;">
+                  * 100% of deposit credited toward your final bespoke garment balance.
+                </div>
+              </div>
+            </details>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: var(--space-2);">
-            <button class="btn btn-primary ui-btn ui-btn-opay" id="simulateOpayBtn" style="width: 100%;">
+            <button class="btn btn-primary ui-btn ui-btn-opay" id="simulateOpayBtn" style="width: 100%; min-height: 48px;">
               Preview OPay deposit (demo)
             </button>
             <div id="opayDemoNote" style="font-size: 0.8125rem; color: var(--muted-foreground); text-align: center;">Demo, no payment taken. Ezekiel will confirm your deposit on WhatsApp.</div>
-            <a href="#" id="bookingConfirmWaBtn" target="_blank" rel="noopener noreferrer" class="btn btn-outline ui-btn ui-btn-outline" style="border-color: rgba(37, 211, 102, 0.4); color: #25D366; width: 100%;">
+            <a href="#" id="bookingConfirmWaBtn" target="_blank" rel="noopener noreferrer" class="btn btn-outline ui-btn ui-btn-outline" style="border-color: rgba(37, 211, 102, 0.4); color: #25D366; width: 100%; min-height: 48px; display: inline-flex; align-items: center; justify-content: center;">
               Confirm on WhatsApp with Ezekiel
             </a>
           </div>
@@ -423,17 +518,31 @@
           <button class="modal-close-btn ui-dialog-close" onclick="document.getElementById('opayModal').classList.remove('open');">✕</button>
         </div>
 
-        <div class="ui-card" style="text-align: center; padding: var(--space-4) var(--space-3); margin-bottom: var(--space-5); background-color: var(--secondary); border: 1px solid var(--border);">
+        <div class="ui-card" style="text-align: center; padding: var(--space-4) var(--space-3); margin-bottom: var(--space-4); background-color: var(--secondary); border: 1px solid var(--border);">
           <div style="font-size: 0.75rem; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.05em;">Amount to Pay</div>
           <div style="font-size: 1.85rem; font-weight: 700; color: var(--foreground); font-family: var(--font-body); margin: 6px 0;">₦50,000.00</div>
-          <div style="font-size: 0.75rem; color: var(--gold);">Merchant: Apparel by Ezekiel Atelier Lagos</div>
+          <div style="font-size: 0.75rem; color: var(--gold-text);">Merchant: Apparel by Ezekiel Atelier Lagos</div>
+
+          <!-- Collapsible Accepted Channels -->
+          <details style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 8px; text-align: left;">
+            <summary class="breakdown-summary" style="font-size: 0.78rem; color: var(--muted-foreground); cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+              <span>Accepted channels & terms</span>
+              <span class="disclosure-arrow">▾</span>
+            </summary>
+            <div style="padding-top: 8px; font-size: 0.75rem; color: var(--muted-foreground); line-height: 1.5;">
+              <div>• Bank Transfer / NIBSS Instant Payment</div>
+              <div>• Debit Card (Mastercard / Visa / Verve)</div>
+              <div>• OPay Wallet & USSD (*955#)</div>
+              <div style="margin-top: 4px; color: var(--foreground);">Fitting date is confirmed instantly on receipt.</div>
+            </div>
+          </details>
         </div>
 
         <div style="font-size: 0.8125rem; color: var(--muted-foreground); line-height: 1.5; margin-bottom: var(--space-5);">
           This is a demonstration of the Nigerian payment flow (Bank Transfer / USSD / Card) for booking deposits. This is a demo only and no money is taken.
         </div>
 
-        <button class="btn btn-primary ui-btn ui-btn-opay" id="completeOpaySimBtn" style="width: 100%;">
+        <button class="btn btn-primary ui-btn ui-btn-opay" id="completeOpaySimBtn" style="width: 100%; min-height: 48px;">
           Close demo (no payment taken)
         </button>
       </div>
