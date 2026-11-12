@@ -321,9 +321,31 @@
             </div>
           </details>
 
-          <button class="btn btn-primary btn-sm ui-btn ui-btn-primary ui-btn-sm" id="btnRecordManualOrder" onclick="document.getElementById('newOrderModal').classList.add('open')">
+          <!-- Desktop Record Order Button -->
+          <button class="btn btn-primary btn-sm ui-btn ui-btn-primary ui-btn-sm orders-desktop-action-btn" id="btnRecordManualOrder" onclick="document.getElementById('newOrderModal').classList.add('open')">
             + Record Manual Order
           </button>
+
+          <!-- Mobile Overflow Actions Disclosure -->
+          <details class="admin-actions-disclosure" id="orderActionsDisclosure">
+            <summary class="admin-actions-summary">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="1.5"></circle>
+                <circle cx="19" cy="12" r="1.5"></circle>
+                <circle cx="5" cy="12" r="1.5"></circle>
+              </svg>
+              <span>Actions</span>
+              <span class="disclosure-arrow">▾</span>
+            </summary>
+            <div class="admin-actions-body">
+              <button type="button" class="btn btn-primary btn-sm ui-btn ui-btn-primary ui-btn-sm" style="width: 100%; min-height: 44px;" onclick="document.getElementById('newOrderModal').classList.add('open')">
+                + Record Manual Order
+              </button>
+              <button type="button" class="btn btn-outline btn-sm ui-btn ui-btn-outline ui-btn-sm" style="width: 100%; min-height: 44px;" onclick="document.getElementById('exportBackupBtn')?.click()">
+                Export Records JSON
+              </button>
+            </div>
+          </details>
         </div>
 
         <div class="ui-table-container">

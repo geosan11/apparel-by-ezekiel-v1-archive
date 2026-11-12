@@ -2079,7 +2079,44 @@ body.admin-body .orders-table tbody tr:hover {
   flex-wrap: wrap;
 }
 
+.admin-actions-disclosure {
+  display: inline-block;
+}
+
+.admin-actions-summary {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  min-height: 44px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--foreground);
+  user-select: none;
+}
+
+.admin-actions-summary::marker,
+.admin-actions-summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-actions-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 @media (min-width: 769px) {
+  .admin-actions-disclosure {
+    display: none !important;
+  }
+  .orders-desktop-action-btn {
+    display: inline-flex !important;
+  }
   .admin-filters-disclosure[open],
   .admin-filters-disclosure {
     display: block;
@@ -2093,6 +2130,26 @@ body.admin-body .orders-table tbody tr:hover {
 }
 
 @media (max-width: 768px) {
+  .orders-desktop-action-btn {
+    display: none !important;
+  }
+  .admin-actions-disclosure {
+    display: block;
+    width: 100%;
+  }
+  .admin-actions-summary {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .admin-actions-body {
+    width: 100%;
+    background: var(--secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px;
+    margin-top: 8px;
+    box-sizing: border-box;
+  }
   .admin-filters-disclosure {
     width: 100%;
   }

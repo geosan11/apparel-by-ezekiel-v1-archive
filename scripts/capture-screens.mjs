@@ -180,6 +180,13 @@ try {
       if (detailLink) detailLink.click();
     `);
     await sleep(800);
+    if (vp.mobile) {
+      await evaluate(`
+        const firstDetailAcc = document.querySelector('#detailModalContent .detail-accordion');
+        if (firstDetailAcc) firstDetailAcc.setAttribute('open', '');
+      `);
+      await sleep(400);
+    }
     await capture(`02b-public-detail-${vp.tag}.png`, vp.mobile ? 'mobile_disclosure_detail.png' : null);
     await evaluate(`
       document.querySelector('#modalDetail .modal-close-btn')?.click();

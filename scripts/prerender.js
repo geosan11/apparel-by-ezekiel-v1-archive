@@ -244,7 +244,7 @@ for (const d of designs) {
 
         <!-- Progressive Disclosure Accordions -->
         <div style="margin-bottom: 24px;">
-          <details open>
+          <details>
             <summary>
               <span>Fabric & Textile Specification</span>
               <span>▾</span>

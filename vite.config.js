@@ -2,6 +2,11 @@ import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  server: {
+    fs: {
+      allow: ['..', '/workspace/apparel']
+    }
+  },
   build: {
     manifest: true,
     target: 'es2022',

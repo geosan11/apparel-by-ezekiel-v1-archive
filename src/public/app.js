@@ -657,7 +657,7 @@ function openDetailModal(design) {
 
           <!-- Progressive Disclosure Accordions: Sizing, Fabric, Care & Pricing Breakdowns -->
           <div style="display: flex; flex-direction: column; gap: 8px;">
-            <details class="detail-accordion" open>
+            <details class="detail-accordion">
               <summary class="detail-accordion-summary">
                 <span>Fabric & Artisanal Textile</span>
                 <span class="disclosure-arrow">▾</span>
